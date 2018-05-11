@@ -1,4 +1,4 @@
-(ns clojure-automate.core
+(ns clojure-gembine.core
   (:import [java.awt Robot Rectangle Toolkit]
            [java.awt.event KeyEvent]
            [javax.imageio ImageIO])
@@ -67,8 +67,10 @@
     (repeatedly n #(move robot
                          (rand-nth moves)))))
 
-(defn take-screenshot [robot]
-  
+(defn take-screenshot
+  "Take a screenshot, either of the screen or of a specific region"
+  ([robot range]
+   )  
   )
 
 (defn -main
