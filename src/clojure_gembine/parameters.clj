@@ -22,3 +22,17 @@
 (defonce green-triangle (read-template "green-triangle.png"))
 (defonce green-pentagon (read-template "green-pentagon.png"))
 
+(defn- board-slice [n a b]
+  (let [cell-size (int (/ (- b a) 4))
+        start (+ a (* n cell-size))]
+    [start cell-size]))
+
+(defn get-board-cell-coordinates [column row]
+  (let [[x1 y1 x2 y2] board-area
+        [xr1 width] (board-slice column x1 x2)
+        [yr1 height] (board-slice row y1 y2)]
+    [xr1 yr1 width height]))
+
+(defn get-board-cell [bufimage column row]
+  (let [[x y w h] (get-board-cell-coordinates column row)]
+    (.getSubimage bufimage x y w h)))
