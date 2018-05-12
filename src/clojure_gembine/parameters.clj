@@ -1,5 +1,5 @@
 (ns clojure-gembine.parameters
-  (require [clojure-gembine.utils :only [get-teamplate]]))
+  (require [clojure-gembine.utils :refer [template-as-file]]))
 
 (def gembine-banner [811 202 1105 276])
 
@@ -26,5 +26,4 @@
 (defonce green-ball-file (template-as-file "green-ball.png"))
 (defonce green-triangle-file (template-as-file "green-triangle.png"))
 (defonce green-pentagon-file (template-as-file "green-pentagon.png"))
-
 
