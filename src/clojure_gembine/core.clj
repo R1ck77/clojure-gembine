@@ -2,6 +2,7 @@
   (:import [java.awt Robot Rectangle Toolkit]
            [java.awt.event KeyEvent]
            [javax.imageio ImageIO])
+  (:require [clojure-gembine.parameters :refer :all])
   (:gen-class))
 
 (def move-delay-ms 400)
