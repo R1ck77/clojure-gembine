@@ -77,3 +77,9 @@ it will be too slow in practice"
         result (create-match-template-output input template)]
     (Imgproc/matchTemplate input template result Imgproc/TM_CCOEFF_NORMED)
     (extract-max-from-mat result)))
+
+(defn dump-mat [filename mat]
+  (Highgui/imwrite filename mat))
+
+(defn dump-bufimage [filename bufimage]
+  (ImageIO/write bufimage "png" (clojure.java.io/file filename)))
