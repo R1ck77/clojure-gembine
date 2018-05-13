@@ -67,15 +67,22 @@
   (let [title-region (get-screen-section screenshot title-area)]
     (> (nth (utils/match-template title-region gembine-title) 2) 0.95)))
 
+(defn test-dummy-move
+  "Must return true when is game over, nil otherwise"
+  [robot]
+  (let [moves (keys arrows)]
+    (move robot (rand-nth moves))
+    (let [screenshot (utils/acquire-screen robot)]
+      (when (is-game-over? screenshot)
+        (tap-space)
+        (sleep 2000)))))
+
 (defn test-random-moves [delay]
   (sleep delay)
-  (let [robot (new-robot)
-        moves (keys arrows)]
-    (dorun
-     (take-while identity (repeatedly (fn []
-                             (move robot (rand-nth moves))
-                             (let [screenshot (utils/acquire-screen robot)]
-                               (is-game-over? screenshot))))))))
+  (let [robot (new-robot)]
+    (when (is-gembine? (utils/acquire-screen robot))
+     (dorun
+      (take-while not (repeatedly #(test-dummy-move robot)))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
