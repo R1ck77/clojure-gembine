@@ -42,3 +42,18 @@
           [_ _ green-value] (match-template mock-cell green-bead)]
       (is (> void-value red-value))
       (is (> void-value green-value)))))
+
+(defn nano-to-milli [nano]
+  (double (/ (long (/ nano 1e6)) 1000)))
+
+(defmacro time-it
+  "Returns the time in ms required for the body's execution"
+  [& body]
+  `(let [start# (System/nanoTime)]
+     ~@body
+     (nano-to-milli (- (System/nanoTime) start#))))
+
+(deftest test-slower-than
+  (testing "a no-op takes about the time specified")
+  (testing "a slow operation is not delayed")
+  (testing "returns the result of the last expression"))
