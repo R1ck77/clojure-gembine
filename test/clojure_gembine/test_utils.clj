@@ -2,5 +2,5 @@
   (:require [clojure.java.io :refer [resource]])
   (:import [javax.imageio ImageIO]))
 
-(defn load-mock-image []
-  (ImageIO/read (resource "mock/modified-with-game-over-screen.png")))
+(defn load-mock-image [id]
+  (ImageIO/read (resource (str "mock/gembine-" id ".png"))))

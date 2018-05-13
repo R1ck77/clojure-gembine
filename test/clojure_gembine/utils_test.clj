@@ -27,16 +27,16 @@
 
 (deftest test-match-template
   (testing "Matching the mock with a 'game over' template returns max point in the message area"
-    (let [[x y _] (match-template (utils/load-mock-image) game-over)]
+    (let [[x y _] (match-template (utils/load-mock-image 7) game-over)]
       (is (in-range [x y] message-area))))
   (testing "The green triangle in the mock are is to the right below of the red one"
-    (let [mock-image (utils/load-mock-image)
+    (let [mock-image (utils/load-mock-image 7)
           [xr yr _] (match-template mock-image red-triangle)
           [xg yg _] (match-template mock-image green-triangle)]
       (is (> xg xr))
       (is (> yg yr))))
   (testing "the cell [0 2] in the mock matches an empty cell better than a red bead or a green bead"
-    (let [mock-cell (get-board-cell (utils/load-mock-image) 0 2)
+    (let [mock-cell (get-board-cell (utils/load-mock-image 7) 0 2)
           [_ _ void-value] (match-template mock-cell void-board)
           [_ _ red-value] (match-template mock-cell red-bead)
           [_ _ green-value] (match-template mock-cell green-bead)]
