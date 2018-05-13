@@ -43,17 +43,27 @@
       (is (> void-value red-value))
       (is (> void-value green-value)))))
 
-(defn nano-to-milli [nano]
-  (double (/ (long (/ nano 1e6)) 1000)))
 
 (defmacro time-it
   "Returns the time in ms required for the body's execution"
   [& body]
   `(let [start# (System/nanoTime)]
      ~@body
-     (nano-to-milli (- (System/nanoTime) start#))))
+     (/ (- (System/nanoTime) start#) 1e6)))
+
+(defmacro ms-about-equal [a b]
+  `(< (Math/abs (- ~a ~b)) 5))
 
 (deftest test-slower-than
-  (testing "a no-op takes about the time specified")
-  (testing "a slow operation is not delayed")
-  (testing "returns the result of the last expression"))
+  (testing "a no-op takes about the time specified"
+    (is (ms-about-equal 30 (time-it (slower-than 30)))))
+  (testing "a slow operation is not delayed"
+    (is (ms-about-equal 40 (time-it (slower-than 20 (Thread/sleep 40))))))
+  (testing "sunny day, generic case"
+    (is (ms-about-equal 20 (time-it (slower-than 20
+                                                 (+ 1 3)
+                                                 (* 3 4))))))
+  (testing "returns the result of the last expression"
+    (is (= 42 (slower-than 20
+                           (+ 1 3)
+                           42)))))

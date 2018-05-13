@@ -16,9 +16,6 @@
 (defn new-robot []
   (Robot.))
 
-(defn- sleep [ms]
-  (Thread/sleep ms))
-
 (defn- rectangle [ax ay bx by]
   (Rectangle. ax ay bx by))
 
@@ -55,7 +52,7 @@
    (move (new-robot) direction))
   ([robot direction]
    (tap-arrow robot direction)
-   (sleep move-delay-ms)))
+   (utils/sleep move-delay-ms)))
 
 (defn is-game-over?
   [screenshot]
@@ -75,10 +72,10 @@
     (let [screenshot (utils/acquire-screen robot)]
       (when (is-game-over? screenshot)
         (tap-space)
-        (sleep 2000)))))
+        (utils/sleep 2000)))))
 
 (defn test-random-moves [delay]
-  (sleep delay)
+  (utils/sleep delay)
   (let [robot (new-robot)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun

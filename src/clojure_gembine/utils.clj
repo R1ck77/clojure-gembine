@@ -11,6 +11,9 @@
 (defn load-opencv-libraries []
   (clojure.lang.RT/loadLibrary org.opencv.core.Core/NATIVE_LIBRARY_NAME))
 
+(defn sleep [ms]
+  (Thread/sleep ms))
+
 (defn- get-screen-size []
   (let [dimension (.getScreenSize (Toolkit/getDefaultToolkit))]
     [(.width dimension) (.height dimension)]))
@@ -83,3 +86,14 @@ it will be too slow in practice"
 
 (defn dump-bufimage [filename bufimage]
   (ImageIO/write bufimage "png" (clojure.java.io/file filename)))
+
+(defn nano-to-milli [nano]
+  (/ nano 1e6))
+
+(defmacro slower-than [delay & body]
+  `(let [start# (System/nanoTime)
+         result# (do ~@body)
+         length# (nano-to-milli (- (System/nanoTime) start#))]
+     (when (< length# ~delay)
+       (sleep (- ~delay length#)))
+     result#))
