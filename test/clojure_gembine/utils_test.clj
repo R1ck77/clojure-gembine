@@ -43,5 +43,5 @@
           [_ _ void-value] (match-template mock-cell void-board)
           [_ _ red-value] (match-template mock-cell red-bead)
           [_ _ green-value] (match-template mock-cell green-bead)]
-      (is (> void-value red-value))o
+      (is (> void-value red-value))
       (is (> void-value green-value)))))
