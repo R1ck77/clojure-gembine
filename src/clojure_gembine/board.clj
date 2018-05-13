@@ -15,7 +15,7 @@
 
 (def symbol-check-order [:rb :rB :rt :rs :rp :gb :gB :gt :gs :gp])
 
-(def match-threshold 0.98)
+(def match-threshold 0.80)
 
 (defn- score-for-symbol-in-area? [area symbol]
   (nth (utils/match-template area (get symbol-to-image symbol)) 2))
@@ -23,12 +23,16 @@
 (defn- result-for-symbol-in-area [area symbol]
   [symbol (score-for-symbol-in-area? area symbol)])
 
+(defn- remove-underscorers [match-results]
+  (filter #(> (second %) match-threshold) match-results))
+
 (defn- get-first-matching-result
   "evaluate lazily the argument and return the symbol corresponding of the  result that beats the threshold.
 
 match-result should be like: [[:rb 0.3] [:gs 0.999] … ]"
   [match-results]
-  (first (first (drop-while #(< (second %) match-threshold) match-results))))
+  (when-let [filtered (remove-underscorers match-results)]
+        (-> (sort-by second filtered) first first)))
 
 (defn- get-best-match                               
   "Return a code specifying the best match"
