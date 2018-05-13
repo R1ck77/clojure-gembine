@@ -33,6 +33,9 @@
         [yr1 height] (board-slice row y1 y2)]
     [xr1 yr1 width height]))
 
-(defn get-board-cell [bufimage column row]
+(defn get-board-cell [screen-bufimage column row]
   (let [[x y w h] (get-board-cell-coordinates column row)]
-    (.getSubimage bufimage x y w h)))
+    (.getSubimage screen-bufimage x y w h)))
+
+(defn get-screen-section [screen-bufimage [x1 y1 x2 y2]]
+  (.getSubimage screen-bufimage x1 y1 (- x2 x1) (- y2 y1)))

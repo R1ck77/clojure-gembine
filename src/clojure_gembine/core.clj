@@ -1,8 +1,9 @@
 (ns clojure-gembine.core
-  (:import [java.awt Robot Rectangle Toolkit]
+  (:import [java.awt Robot Rectangle]
            [java.awt.event KeyEvent]
            [javax.imageio ImageIO])
-  (:require [clojure-gembine.parameters :refer :all])
+  (:require [clojure-gembine.parameters :refer :all]
+            [clojure-gembine.utils :as utils])
   (:gen-class))
 
 (def move-delay-ms 400)
@@ -20,10 +21,6 @@
 
 (defn- rectangle [ax ay bx by]
   (Rectangle. ax ay bx by))
-
-(defn- screen-size []
-  (let [dimension (.getScreenSize (Toolkit/getDefaultToolkit))]
-    [(.width dimension) (.height dimension)]))
 
 (defn tap-key
   "Do a quick tap on the keyboard"
@@ -60,19 +57,25 @@
    (tap-arrow robot direction)
    (sleep move-delay-ms)))
 
+(defn is-game-over? ;; this one can be easily tested! Strange resuls:
+  ;;; game over -> game-over 0.99999 no-message -0.07
+  ;;; not game over -> game-over 0.068 no-message -0.044
+  [screenshot]
+  (let [message-region (get-screen-section screenshot message-area)]
+    (> (nth (utils/match-template message-region game-over) 2)
+       (nth (utils/match-template message-region no-message) 2))))
 
-(defn test-random-moves [delay n]
+(defn test-random-moves [delay]
   (sleep delay)
   (let [robot (new-robot)
         moves (keys arrows)]
-    (repeatedly n #(move robot
-                         (rand-nth moves)))))
-
-(defn take-screenshot
-  "Take a screenshot, either of the screen or of a specific region"
-  ([robot range]
-   )  
-  )
+    (dorun
+     (take-while identity (repeatedly (fn []
+                             (println "moving!")
+                             (move robot (rand-nth moves))
+                             (let [screenshot (utils/acquire-screen robot)]
+                               (is-game-over? screenshot))))))
+    (println "Game over")))
 
 (defn -main
   "I don't do a whole lot ... yet."

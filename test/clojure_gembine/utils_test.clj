@@ -39,9 +39,9 @@
       (is (> xg xr))
       (is (> yg yr))))
   (testing "the cell [0 2] in the mock matches an empty cell better than a red bead or a green bead"
-    (let [mock-cell (get-board-cell (load-mock-image 0 2))
-          [_ _ evalue] (match-template mock-cell void-board)
-          [_ _ rvalue] (match-template mock-cell red-bead)
-          [_ _ gvalue] (match-template mock-cell green-bead)]
-      (is (> evalue rvalue))
-      (is (> evalue gvalue)))))
+    (let [mock-cell (get-board-cell (load-mock-image) 0 2)
+          [_ _ void-value] (match-template mock-cell void-board)
+          [_ _ red-value] (match-template mock-cell red-bead)
+          [_ _ green-value] (match-template mock-cell green-bead)]
+      (is (> void-value red-value))o
+      (is (> void-value green-value)))))
