@@ -21,4 +21,28 @@
             [:rb :rB nil nil]
             [:rs nil nil :rb]
             [:rt :rB :rb nil]]
-         (read-board (utils/load-mock-image 3))))))
+           (read-board (utils/load-mock-image 3)))))
+  (testing "result on mock 4"
+    (is (= [[nil :rb nil nil]
+            [:rB nil :rb :rs]
+            [nil nil :rt :rB]
+            [nil :rt :rb :rp]]
+           (read-board (utils/load-mock-image 4)))))
+  (testing "result on mock 5"
+    (is (= [[nil nil :rb :rB]
+            [nil :rB :rB :rt]
+            [:rb :rt :rs :gb]
+            [:rb :rb :rB :rt]]
+           (read-board (utils/load-mock-image 5)))))
+  (testing "result on mock 6"
+    (is (= [[:rB :rt :rB :rb]
+            [:gb :rB :rs :rb]
+            [:rb :gB :rp :gt]
+            [:rB :rb :rs :rb]]
+           (read-board (utils/load-mock-image 6)))))
+  (testing "result on mock 7"
+    (is (= [[:rB :rt :rB :rb]
+            [:gb :rB :rs :rB]
+            [nil :gB :rp :gt]
+            [:rB :rb :rs :rb]]
+         (read-board (utils/load-mock-image 7))))))
