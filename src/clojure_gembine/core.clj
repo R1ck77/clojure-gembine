@@ -62,8 +62,7 @@
   ;;; not game over -> game-over 0.068 no-message -0.044
   [screenshot]
   (let [message-region (get-screen-section screenshot message-area)]
-    (> (nth (utils/match-template message-region game-over) 2)
-       (nth (utils/match-template message-region no-message) 2))))
+    (> (nth (utils/match-template message-region game-over) 2) 0.8)))
 
 (defn test-random-moves [delay]
   (sleep delay)
