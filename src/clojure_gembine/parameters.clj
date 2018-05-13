@@ -3,7 +3,7 @@
 
 (load-opencv-libraries)
 
-(def gembine-banner-area [811 202 1105 276])
+(def title-area [811 202 1105 276])
 (defonce gembine-title (read-template "gembine-title.png"))
 
 (def message-area [1330 550 1490 700])

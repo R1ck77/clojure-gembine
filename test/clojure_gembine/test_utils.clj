@@ -4,3 +4,7 @@
 
 (defn load-mock-image [id]
   (ImageIO/read (resource (str "mock/gembine-" id ".png"))))
+
+(defn load-outlier []
+  (ImageIO/read (resource "mock/outlier.png")))
+
