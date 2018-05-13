@@ -5,7 +5,7 @@
 
 (deftest test-read-board
   (testing "result on mock 1"
-    (is (= [[:rt :rB :rt :ra]
+    (is (= [[:rt :rB :rt :rs]
             [:rB :rt :gb :rB]
             [:rb :gB :rb :rs]
             [:rs :rt :gB :rb]]
