@@ -1,7 +1,5 @@
 (ns clojure-gembine.parameters
-  (require [clojure-gembine.utils :refer [read-template load-opencv-libraries]]))
-
-(load-opencv-libraries)
+  (require [clojure-gembine.utils :refer [read-template]]))
 
 (def title-area [811 202 1105 276])
 

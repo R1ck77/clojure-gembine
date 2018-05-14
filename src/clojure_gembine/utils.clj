@@ -4,8 +4,8 @@
            [java.io File FileOutputStream]
            [javax.imageio ImageIO]
            [java.awt Rectangle Robot Toolkit]
-           [org.opencv.highgui Highgui]
            [org.opencv.imgproc Imgproc]
+           [org.opencv.imgcodecs Imgcodecs]
            [org.opencv.core Core CvType Mat MatOfInt]))
 
 (defn load-opencv-libraries []
@@ -39,7 +39,7 @@ From a cursory search, OpenCV likes files it would seem…"
 (defn- read-mat 
   "Convert a file into a OpenCV mat"
   [file]
-  (Highgui/imread (.getAbsolutePath file) Highgui/IMREAD_COLOR))
+  (Imgcodecs/imread (.getAbsolutePath file) Imgcodecs/IMREAD_COLOR))
 
 (defn read-template
   "Read a java resource into a mat"
@@ -58,7 +58,7 @@ it will be too slow in practice"
   [bufimage]
   (let [temp-file (File/createTempFile "gembine-conversion-" ".png")]
     (ImageIO/write bufimage "png" temp-file)
-    (let [result (Highgui/imread (.getAbsolutePath temp-file) Highgui/IMREAD_COLOR)]
+    (let [result (Imgcodecs/imread (.getAbsolutePath temp-file) Imgcodecs/IMREAD_COLOR)]
       (.delete temp-file)
       result)))
 
@@ -82,7 +82,7 @@ it will be too slow in practice"
     (extract-max-from-mat result)))
 
 (defn dump-mat [filename mat]
-  (Highgui/imwrite filename mat))
+  (Imgcodecs/imwrite filename mat))
 
 (defn dump-bufimage [filename bufimage]
   (ImageIO/write bufimage "png" (clojure.java.io/file filename)))
