@@ -1,16 +1,24 @@
 #!/bin/bash
 
-UBUNTU_JAR_LOCATION=/usr/share/java/opencv-249.jar
-UBUNTU_SO_LOCATION=/usr/lib/jni/libopencv_java249.so
-UBUNTU_JAR_VERSION=2.4.9
-EXPECTED_NATIVE_JAR=opencv-native-249.jar
+# compile and install the code with
+#    cmake -DCMAKE_INSTALL_PREFIX:PATH=#{HOME}/local/opencv cmake -DBUILD_SHARED_LIBS=OFF ..
+#    make -j 8 install
+# and execute:
+#    execstack -c ${HOME}/local/share/OpenCV/java/libopencv_java341.so 
+
+VERSION=3.4.1
+COMPVERSION=`echo ${VERSION} | sed s/[.]//g`
+BASE_PATH=${HOME}/local/opencv/share/OpenCV/java
+JAR_LOCATION=${BASE_PATH}/opencv-${COMPVERSION}.jar
+SO_LOCATION=${BASE_PATH}/libopencv_java${COMPVERSION}.so
+EXPECTED_NATIVE_JAR=opencv-native-${COMPVERSION}.jar
 
 DEST=native/linux/x86_64
 mkdir -p ${DEST}
-cp ${UBUNTU_SO_LOCATION} ${DEST}
+cp ${SO_LOCATION} ${DEST}
 jar -cMf ${EXPECTED_NATIVE_JAR} native
 rm -rf native
 
-mvn install:install-file -Dfile=${UBUNTU_JAR_LOCATION} -DgroupId=opencv -DartifactId=opencv -Dversion=${UBUNTU_JAR_VERSION} -Dpackaging=jar
-mvn install:install-file -Dfile=${EXPECTED_NATIVE_JAR} -DgroupId=opencv -DartifactId=opencv-native -Dversion=${UBUNTU_JAR_VERSION} -Dpackaging=jar
+mvn install:install-file -Dfile=${JAR_LOCATION} -DgroupId=opencv -DartifactId=opencv -Dversion=${VERSION} -Dpackaging=jar
+mvn install:install-file -Dfile=${EXPECTED_NATIVE_JAR} -DgroupId=opencv -DartifactId=opencv-native -Dversion=${VERSION} -Dpackaging=jar
 rm ${EXPECTED_NATIVE_JAR}
