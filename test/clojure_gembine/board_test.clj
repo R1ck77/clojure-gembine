@@ -36,7 +36,7 @@
            (read-board (utils/load-mock-image 5)))))
   (testing "result on mock 6"
     (is (= [[:rB :rt :rB :rb]
-            [:gb :rB :rs :rb]
+            [:gb :rB :rs :rB]
             [:rb :gB :rp :gt]
             [:rB :rb :rs :rb]]
            (read-board (utils/load-mock-image 6)))))
