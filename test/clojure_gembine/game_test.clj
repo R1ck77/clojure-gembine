@@ -19,7 +19,7 @@
     (is (= demo-board (-> demo-board rotate rotate rotate rotate)))))
 
 
-(deftest test-move
+(deftest test-step
   (testing "translation only"
     (is (= [[:rb nil nil nil]
             [:rB :rB :rB nil]
@@ -33,7 +33,46 @@
     (is (= [[:rB :rB :rB nil]
             [:rt :rt :rt nil]
             [:rs :gt :rp nil]
-            [:rs nil :rs nil]] (step [[:rb :rb :rB :rB]
-                                      [nil :rt :rt :rt]
-                                      [:rs :gB :gB :rp]
-                                      [nil :rs nil :rs]])))))
+            [:rs nil :rs nil]]
+           (step [[:rb :rb :rB :rB]
+                  [nil :rt :rt :rt]
+                  [:rs :gB :gB :rp]
+                  [nil :rs nil :rs]])))))
+
+(deftest test-move
+  (testing "move up"
+    (is (= [[:rb :rb :rB :rB]
+            [:rs :rt :rt :rt]
+            [nil :gB :gB :rp]
+            [nil :rs nil :rs]]
+           (move [[:rb :rb :rB :rB]
+                  [nil :rt :rt :rt]
+                  [:rs :gB :gB :rp]
+                  [nil :rs nil :rs]] :up))))
+  (testing "move down"
+    (is (= [[nil :rb nil :rB]
+            [:rb :rt :rB :rt]
+            [nil :gB :rt :rp]
+            [:rs :rs :gB :rs]]
+           (move [[:rb :rb :rB :rB]
+                  [nil :rt :rt :rt]
+                  [:rs :gB :gB :rp]
+                  [nil :rs nil :rs]] :down))))
+  (testing "move left"
+    (is (= [[:rB :rB :rB nil]
+            [:rt :rt :rt nil]
+            [:rs :gt :rp nil]
+            [:rs nil :rs nil]]
+           (move [[:rb :rb :rB :rB]
+                  [nil :rt :rt :rt]
+                  [:rs :gB :gB :rp]
+                  [nil :rs nil :rs]] :left))))
+  (testing "move right"
+    (is (= [[nil :rb :rb :rt]
+            [nil nil :rt :rs]
+            [nil :rs :gt :rp]
+            [nil nil :rs :rs]]
+           (move [[:rb :rb :rB :rB]
+                  [nil :rt :rt :rt]
+                  [:rs :gB :gB :rp]
+                  [nil :rs nil :rs]] :right)))))

@@ -57,8 +57,8 @@
   "Perform the specified move, which might have no result."
   [board direction]
   (case direction
-    :up (-> board rotate step rotate rotate rotate)
-    :down (-> board rotate rotate rotate step rotate)
+    :down (-> board rotate step rotate rotate rotate)
+    :up (-> board rotate rotate rotate step rotate)
     :left (step board)
     :right (-> board rotate rotate step rotate rotate)))
 
