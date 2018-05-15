@@ -53,15 +53,17 @@
    (step-row (nth board 2))
    (step-row (nth board 3))])
 
+(defn- apply-rotated [board direction f] 
+  (case direction
+    :down (-> board rotate f rotate rotate rotate)
+    :up (-> board rotate rotate rotate f rotate)
+    :left (f board)
+    :right (-> board rotate rotate f rotate rotate)))
+
 (defn move
   "Perform the specified move, which might have no result."
   [board direction]
-  (case direction
-    :down (-> board rotate step rotate rotate rotate)
-    :up (-> board rotate rotate rotate step rotate)
-    :left (step board)
-    :right (-> board rotate rotate step rotate rotate)))
-
+  (apply-rotated board direction step))
 
 (defn can-move?
   "Check whether the board can be moved in the specific direction.
@@ -72,3 +74,17 @@ Good enough performance wise, at least for now."
   [board direction]
   (not (= board (move board direction))))
 
+(defn- board-indexed-row-ends [board]
+  (map #(vector % %2) [0 1 2 3 4] (map #(nth % 3) board)))
+
+(defn left-insertion-indices
+  "Available row indices that have a space for insertion at the end"
+  [board]
+  (map first (filter #(nil? (second %)) (board-indexed-row-ends board))))
+
+(defn insertion-indices
+  "Available indices for insertion in the specified direction.
+
+The indices follow the clockwise convention"
+  [board direction]
+  (apply-rotated board direction left-insertion-indices))
