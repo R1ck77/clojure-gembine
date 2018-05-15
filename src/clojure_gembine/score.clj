@@ -20,8 +20,22 @@
                   3 4 4 3
                   2 3 3 2])))
 
+(defn- score-tuple
+  "Return 2 if the pair is comprised of non nil identical values, 0 otherwise"
+  [[a b]]
+  (if (and a b (= a b)) 2 0))
+
+(defn- score-row [row]
+  "Return the number of identical couples in a row"
+  (apply + (map score-tuple (partition 2 1 row))))
+
+(defn- score-side-adjacent-values [board]
+  (apply + (map score-row board)))
+
 (defn- score-adjacent-values [board]
-  0)
+  "Score all adjacent identical values as 2 points, in both horizontal and vertical direction"
+  (+ (score-side-adjacent-values board)
+     (-> board game/rotate score-side-adjacent-values)))
 
 (defn simple-score
   "Very simple board scoring:
