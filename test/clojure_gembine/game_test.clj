@@ -28,4 +28,12 @@
            (step [[nil :rb nil nil]
                   [:rB nil :rB :rB]
                   [:gb nil nil :rt]
-                  [:rs :gs :rs :gs]])))))
+                  [:rs :gs :rs :gs]]))))
+  (testing "generic example 1"
+    (is (= [[:rB :rB :rB nil]
+            [:rt :rt :rt nil]
+            [:rs :gt :rp nil]
+            [:rs nil :rs nil]] (step [[:rb :rb :rB :rB]
+                                      [nil :rt :rt :rt]
+                                      [:rs :gB :gB :rp]
+                                      [nil :rs nil :rs]])))))
