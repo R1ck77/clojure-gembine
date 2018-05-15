@@ -6,6 +6,7 @@
             [clojure-gembine.utils :as utils]
             [clojure-gembine.board :as board]
             [clojure-gembine.game :as game]
+            [clojure-gembine.move-logic :as move-logic]
             [clojure-gembine.preview :as preview])
   (:gen-class))
 
@@ -75,19 +76,12 @@
   (let [moves (keys arrows)]
     (perform-move robot (rand-nth moves))))
 
-(defn ensure-game-over [robot board]
-  (when-not (preview/is-game-over? (utils/acquire-screen robot))
-    (throw (IllegalStateException. (format "No moves, but no game over either?! Board: %s" board) ))))
-
 (defn test-valid-moves-only
   [robot]
   (let [all-moves (keys arrows)]
     (let [before-move (utils/acquire-screen robot)
-          initial-board (board/read-board before-move)
-          available-moves (filter #(game/can-move? initial-board %) all-moves)]
-      (if (empty? available-moves)
-        (ensure-game-over robot initial-board)
-        (perform-move robot (rand-nth available-moves))))))
+          initial-board (board/read-board before-move)]
+        (perform-move robot (move-logic/greedy-moves-evaluator initial-board)))))
 
 (defn execute-moves [delay function]
   (utils/sleep delay)
