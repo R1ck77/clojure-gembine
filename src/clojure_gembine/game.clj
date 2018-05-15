@@ -1,9 +1,6 @@
-(ns clojure-gembine.game
- 
-  )
+(ns clojure-gembine.game)
 
-
-(defn rotate-board
+(defn rotate
   "Rotate the board in a way that the right move corresponds to the previos up move"
   [board]
   (vec
