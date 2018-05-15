@@ -9,7 +9,7 @@
             [clojure-gembine.preview :as preview])
   (:gen-class))
 
-(def move-delay-ms 400)
+(def move-delay-ms 1000)
 
 (def arrows {:up KeyEvent/VK_UP
              :down KeyEvent/VK_DOWN
@@ -54,8 +54,7 @@
   ([direction]
    (move (new-robot) direction))
   ([robot direction]
-   (tap-arrow robot direction)
-   (utils/sleep move-delay-ms)))
+   (tap-arrow robot direction)))
 
 (defn is-gembine? 
   [screenshot]
@@ -67,8 +66,7 @@
   (move robot direction)
   (let [screenshot (utils/acquire-screen robot)]
       (when (preview/is-game-over? screenshot)
-        (tap-space)
-        (utils/sleep 2000))))
+        (tap-space))))
 
 (defn test-dummy-move
   "Must return true when is game over, nil otherwise"
@@ -76,9 +74,9 @@
   (let [moves (keys arrows)]
     (perform-move robot (rand-nth moves))))
 
-(defn ensure-game-over [robot]
+(defn ensure-game-over [robot board]
   (when-not (preview/is-game-over? (utils/acquire-screen robot))
-    (throw (IllegalStateException. "No moves, but no game over either?!"))))
+    (throw (IllegalStateException. (format "No moves, but no game over either?! Board: %s" board) ))))
 
 (defn test-valid-moves-only
   [robot]
@@ -87,15 +85,20 @@
           initial-board (board/read-board before-move)
           available-moves (filter #(game/can-move? initial-board %) all-moves)]
       (if (empty? available-moves)
-        (ensure-game-over robot)
+        (ensure-game-over robot initial-board)
         (perform-move robot (rand-nth available-moves))))))
+
+
+(defn move-executor [robot function]
+  (utils/slower-than move-delay-ms
+                     (function robot)))
 
 (defn execute-moves [delay function]
   (utils/sleep delay)
   (let [robot (new-robot)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
-      (take-while not (repeatedly #(function robot)))))))
+      (take-while not (repeatedly (partial move-executor robot function)))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
