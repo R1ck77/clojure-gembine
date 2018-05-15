@@ -63,7 +63,7 @@
     :right (-> board rotate rotate step rotate rotate)))
 
 
-(defn can-move
+(defn can-move?
   "Check whether the board can be moved in the specific direction.
 
 Easiest (and dumbest) way is to try to perform the move and see if anything changed.
