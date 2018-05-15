@@ -53,3 +53,22 @@
    (step-row (nth board 2))
    (step-row (nth board 3))])
 
+(defn move
+  "Perform the specified move, which might have no result."
+  [board direction]
+  (case direction
+    :up (-> board rotate step rotate rotate rotate)
+    :down (-> board rotate rotate rotate step rotate)
+    :left (step board)
+    :right (-> board rotate rotate step rotate rotate)))
+
+
+(defn can-move
+  "Check whether the board can be moved in the specific direction.
+
+Easiest (and dumbest) way is to try to perform the move and see if anything changed.
+
+Good enough performance wise, at least for now."
+  [board direction]
+  (not (= board (move board direction))))
+
