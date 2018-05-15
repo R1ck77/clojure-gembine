@@ -34,7 +34,7 @@ match-result should be like: [[:rb 0.3] [:gs 0.999] … ]"
   (when-let [filtered (remove-underscorers match-results)]
         (-> (sort-by second filtered) first first)))
 
-(defn- get-best-match                               
+(defn get-best-match                               
   "Return a code specifying the best match"
   [area]
   (get-first-matching-result (map (partial result-for-symbol-in-area area)
@@ -56,9 +56,3 @@ match-result should be like: [[:rb 0.3] [:gs 0.999] … ]"
    (read-row screenshot 2)
    (read-row screenshot 3)])
 
-(defn rotate-board
-  "Rotate the board in a way that the right move corresponds to the previos up move"
-  [board]
-  (vec
-   (map (fn [index] (vec (map #(nth % index) (reverse board))))
-        [0 1 2 3])))

@@ -3,7 +3,8 @@
            [java.awt.event KeyEvent]
            [javax.imageio ImageIO])
   (:require [clojure-gembine.parameters :refer :all]
-            [clojure-gembine.utils :as utils])
+            [clojure-gembine.utils :as utils]
+            [clojure-gembine.preview :as preview])
   (:gen-class))
 
 (def move-delay-ms 400)
@@ -54,11 +55,6 @@
    (tap-arrow robot direction)
    (utils/sleep move-delay-ms)))
 
-(defn is-game-over?
-  [screenshot]
-  (let [message-region (get-screen-section screenshot message-area)]
-    (> (nth (utils/match-template message-region game-over) 2) 0.8)))
-
 (defn is-gembine? 
   [screenshot]
   (let [title-region (get-screen-section screenshot title-area)]
@@ -70,7 +66,7 @@
   (let [moves (keys arrows)]
     (move robot (rand-nth moves))
     (let [screenshot (utils/acquire-screen robot)]
-      (when (is-game-over? screenshot)
+      (when (preview/is-game-over? screenshot)
         (tap-space)
         (utils/sleep 2000)))))
 
