@@ -54,7 +54,8 @@
   ([direction]
    (move (new-robot) direction))
   ([robot direction]
-   (tap-arrow robot direction)))
+   (tap-arrow robot direction)
+   (utils/sleep move-delay-ms)))
 
 (defn is-gembine? 
   [screenshot]
@@ -88,17 +89,12 @@
         (ensure-game-over robot initial-board)
         (perform-move robot (rand-nth available-moves))))))
 
-
-(defn move-executor [robot function]
-  (utils/slower-than move-delay-ms
-                     (function robot)))
-
 (defn execute-moves [delay function]
   (utils/sleep delay)
   (let [robot (new-robot)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
-      (take-while not (repeatedly (partial move-executor robot function)))))))
+      (take-while not (repeatedly #(function robot)))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
