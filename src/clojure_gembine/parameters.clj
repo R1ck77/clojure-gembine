@@ -5,7 +5,6 @@
 
 (defonce gembine-title (read-template "gembine-title.png"))
 
-
 (def message-area [1330 550 1490 700])
 
 (defonce game-over (read-template "game-over.png"))

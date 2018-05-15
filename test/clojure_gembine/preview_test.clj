@@ -1,5 +1,6 @@
 (ns clojure-gembine.preview-test
   (:require [clojure.test :refer :all]
+            [clojure-gembine.test-utils :as utils]
             [clojure-gembine.preview :refer :all]))
 
 (deftest test-is-game-over?
@@ -15,5 +16,5 @@
 
 (deftest test-next-move
   (testing "next move for available mocks"
-    (is (:rB (next-move (utils/load-mock-image 2))))
-    (is (:rb (next-move (utils/load-mock-image 3))))))
+    (is (= :rB (next-move (utils/load-mock-image 2))))
+    (is (= :rb (next-move (utils/load-mock-image 3))))))
