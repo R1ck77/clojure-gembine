@@ -40,11 +40,36 @@
 (defn- sort-moves-ascending [moves]
   (sort-by compare-moves moves))
 
+(defn raw-minimax-moves-evaluator [board next-element]
+  (first (sort-moves-ascending
+          (map (fn [[move evolved-board]]
+                 (pure-minimax-score-move move evolved-board next-element))
+               (evolved-boards board)))))
+
+
 ;;; doesn't account for the probabilistic nature of the game
 ;;; TODO very poor performances in respect to potential, not necessarily an issue
 (defn minimax-moves-evaluator [board next-element]
   (first
-   (first (sort-moves-ascending
-           (map (fn [[move evolved-board]]
-                  (pure-minimax-score-move move evolved-board next-element))
-                (evolved-boards board))))))
+   (raw-minimax-moves-evaluator board next-element)))
+
+(defn create-minimax-two-ahead-moves-evaluator
+  "Create a minimax that looks 2 steps ahead. Not optimized, sketched code
+
+Ignores the weight of dead paths…"
+  []
+  (let [allowed-next-elements (atom #{:rb :rB})]
+    (fn [board next-element]
+      (swap! allowed-next-elements #(conj % next-element))
+
+      (first (first (sort-moves-ascending (map (fn [[move evolved-board]]
+                                           (vector move (apply min (flatten
+                                                                    (map (fn [l2-board]
+                                                                           (map #(if (nil? %) 0 %) (map #(second (raw-minimax-moves-evaluator l2-board %))
+                                                                                 @allowed-next-elements)))
+                                                                         (game/all-insertions evolved-board move next-element))))))
+                                               (evolved-boards board))))))))
+
+
+
+

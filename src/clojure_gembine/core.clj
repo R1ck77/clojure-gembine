@@ -79,19 +79,20 @@
     (perform-move robot (rand-nth moves))))
 
 (defn test-valid-moves-only
-  [robot]
+  [robot logic]
   (let [all-moves (keys arrows)]
     (let [before-move (utils/acquire-screen robot)
           initial-board (board/read-board before-move)
           next-symbol (preview/next-move before-move)]
-        (perform-move robot (move-logic/minimax-moves-evaluator initial-board next-symbol)))))
+        (perform-move robot (logic initial-board next-symbol)))))
 
 (defn execute-moves [delay function]
   (utils/sleep delay)
-  (let [robot (new-robot)]
+  (let [robot (new-robot)
+        logic (move-logic/create-minimax-two-ahead-moves-evaluator)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
-      (repeatedly #(function robot))))))
+      (repeatedly #(function robot logic))))))
 
 (defn -main
   "I don't do a whole lot ... yet."
