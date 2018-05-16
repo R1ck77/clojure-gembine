@@ -67,8 +67,10 @@
 (defn- perform-move [robot direction]
   (move robot direction)
   (let [screenshot (utils/acquire-screen robot)]
-      (when (preview/is-game-over? screenshot)
-        (tap-space))))
+    (when (preview/is-game-over? screenshot)
+      (println "New game!")
+      (tap-space)
+      (utils/sleep move-delay-ms))))
 
 (defn test-dummy-move
   "Must return true when is game over, nil otherwise"
@@ -89,7 +91,7 @@
   (let [robot (new-robot)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
-      (take-while not (repeatedly #(function robot)))))))
+      (repeatedly #(function robot))))))
 
 (defn -main
   "I don't do a whole lot ... yet."

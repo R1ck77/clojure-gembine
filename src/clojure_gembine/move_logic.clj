@@ -38,14 +38,13 @@
                                (game/all-insertions evolved-board move next-element)))))
 
 (defn- sort-moves-ascending [moves]
-  (sort-by second moves))
+  (sort-by compare-moves moves))
 
 ;;; doesn't account for the probabilistic nature of the game
 ;;; TODO very poor performances in respect to potential, not necessarily an issue
 (defn minimax-moves-evaluator [board next-element]
   (first
-   (first
-    (sort-moves-ascending
-     (map (fn [[move evolved-board]]
-            (pure-minimax-score-move move evolved-board next-element))
-          (evolved-boards board))))))
+   (first (sort-moves-ascending
+           (map (fn [[move evolved-board]]
+                  (pure-minimax-score-move move evolved-board next-element))
+                (evolved-boards board))))))
