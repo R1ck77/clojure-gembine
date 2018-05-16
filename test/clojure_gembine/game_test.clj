@@ -76,3 +76,11 @@
                   [nil :rt :rt :rt]
                   [:rs :gB :gB :rp]
                   [nil :rs nil :rs]] :right)))))
+
+(deftest test-insertion-indices
+  (testing "insertion indices in the natural orientation"
+    (is (= [1 3]
+           (insertion-indices [[:rb :rb :rb :rb]
+                               [nil :rb :rb nil]
+                               [nil nil :rb :rb]
+                               [nil :rb :rb nil]] :left)))))

@@ -77,7 +77,7 @@ Good enough performance wise, at least for now."
 (defn- board-indexed-row-ends [board]
   (map #(vector % %2) [0 1 2 3 4] (map #(nth % 3) board)))
 
-(defn left-insertion-indices
+(defn- left-insertion-indices
   "Available row indices that have a space for insertion at the end"
   [board]
   (map first (filter #(nil? (second %)) (board-indexed-row-ends board))))
