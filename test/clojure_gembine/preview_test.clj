@@ -4,11 +4,11 @@
             [clojure-gembine.preview :refer :all]))
 
 (deftest test-is-game-over?
-  (testing "positive cases"
+  (testing "mocks with game over detected correctly"
     (is (is-game-over? (utils/load-mock-image 1)))
     (is (is-game-over? (utils/load-mock-image 6)))
     (is (is-game-over? (utils/load-mock-image 7))))
-  (testing "negative cases"
+  (testing "mocks without game over are not detected erroneously"
     (is (not (is-game-over? (utils/load-mock-image 2))))
     (is (not (is-game-over? (utils/load-mock-image 3))))
     (is (not (is-game-over? (utils/load-mock-image 4))))
