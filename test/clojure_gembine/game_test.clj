@@ -100,3 +100,47 @@
                                [nil :rb :rb nil]
                                [nil nil :rb :rb]
                                [nil :rb :rb nil]] :down)))))
+
+(deftest test-insertion-indices
+  (testing "insertion in the natural orientation"
+    (is (= [[:rb :rb :rb :rb]
+            [nil :rb :rb :gp]
+            [nil nil :rb :rb]
+            [nil :rb :rb nil]]
+           (insert-element [[:rb :rb :rb :rb]
+                            [nil :rb :rb nil]
+                            [nil nil :rb :rb]
+                            [nil :rb :rb nil]] :left 1 :gp)))
+    (is (= [[:rb :rb :rb :rb]
+            [nil :rb :rb nil]
+            [nil nil :rb :rb]
+            [nil :rb :rb :gp]]
+           (insert-element [[:rb :rb :rb :rb]
+                            [nil :rb :rb nil]
+                            [nil nil :rb :rb]
+                            [nil :rb :rb nil]] :left 3 :gp))))
+(testing "insertion indices in non natural orientations"
+    (is (= [[:rb :rb :rb :rb]
+            [nil :rb :rb nil]
+            [nil nil :rb :rb]
+            [:gt :rb :rb nil]]
+           (insert-element [[:rb :rb :rb :rb]
+                            [nil :rb :rb nil]
+                            [nil nil :rb :rb]
+                            [nil :rb :rb nil]] :right 0 :gt)))
+    (is (= [[:rb :rb :rb :rb]
+            [nil :rb :rb nil]
+            [nil nil :rb :rb]
+            [nil :rb :gp nil]]
+           (insert-element [[:rb :rb :rb :rb]
+                            [nil :rb :rb nil]
+                            [nil nil :rb :rb]
+                            [nil :rb nil nil]] :up 1 :gp)))
+    (is (= [[:rb :gt :rb :rb]
+            [nil :rb :rb nil]
+            [nil nil :rb :rb]
+            [nil :rb :rb nil]]
+           (insert-element [[:rb :rb :rb :rb]
+                            [nil :rb :rb nil]
+                            [nil nil :rb :rb]
+                            [nil :rb :rb nil]] :down 1 :gt)))))

@@ -96,3 +96,21 @@ Good enough performance wise, at least for now."
 The indices follow the clockwise convention"
   [board direction]
   (Tf board direction left-insertion-indices))
+
+(defn- left-insert-element
+  "Left insert the specific element at the specific index.
+
+Doesn't check for wrong indexes and overwrites the corresponding values.
+
+Returns the new board"
+  [board index element]
+  (assoc-in board [index 3] element))
+
+(defn insert-element
+  "Insert a new element the way the game would
+
+Doesn't check for wrong indexes and overwrites the corresponding values.
+
+Returns the new board"
+  [board direction index element]
+  (TfinvT board direction #(left-insert-element % index element)))
