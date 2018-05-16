@@ -114,3 +114,9 @@ Doesn't check for wrong indexes and overwrites the corresponding values.
 Returns the new board"
   [board direction index element]
   (TfinvT board direction #(left-insert-element % index element)))
+
+(defn all-insertions
+  "TODO/FIXME could be worth some optimization, and remove some unneeded rotations"
+  [board move element]
+  (map #(insert-element board move % element)
+       (insertion-indices board move)))
