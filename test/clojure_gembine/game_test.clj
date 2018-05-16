@@ -83,4 +83,20 @@
            (insertion-indices [[:rb :rb :rb :rb]
                                [nil :rb :rb nil]
                                [nil nil :rb :rb]
-                               [nil :rb :rb nil]] :left)))))
+                               [nil :rb :rb nil]] :left))))
+  (testing "insertion indices in non natural orientations"
+    (is (= [0 1 2]
+           (insertion-indices [[:rb :rb :rb :rb]
+                               [nil :rb :rb nil]
+                               [nil nil :rb :rb]
+                               [nil :rb :rb nil]] :right)))
+    (is (= [0 1 3]
+           (insertion-indices [[:rb :rb :rb :rb]
+                               [nil :rb :rb nil]
+                               [nil nil :rb :rb]
+                               [nil :rb nil nil]] :up)))
+    (is (= []
+           (insertion-indices [[:rb :rb :rb :rb]
+                               [nil :rb :rb nil]
+                               [nil nil :rb :rb]
+                               [nil :rb :rb nil]] :down)))))

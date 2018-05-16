@@ -53,7 +53,15 @@
    (step-row (nth board 2))
    (step-row (nth board 3))])
 
-(defn- apply-rotated [board direction f] 
+(defn- Tf [board direction f] 
+  (case direction
+    :down (-> board rotate f)
+    :up (-> board rotate rotate rotate f)
+    :left (f board)
+    :right (-> board rotate rotate f)))
+
+
+(defn- TfinvT [board direction f] 
   (case direction
     :down (-> board rotate f rotate rotate rotate)
     :up (-> board rotate rotate rotate f rotate)
@@ -63,7 +71,7 @@
 (defn move
   "Perform the specified move, which might have no result."
   [board direction]
-  (apply-rotated board direction step))
+  (TfinvT board direction step))
 
 (defn can-move?
   "Check whether the board can be moved in the specific direction.
@@ -87,4 +95,4 @@ Good enough performance wise, at least for now."
 
 The indices follow the clockwise convention"
   [board direction]
-  (apply-rotated board direction left-insertion-indices))
+  (Tf board direction left-insertion-indices))
