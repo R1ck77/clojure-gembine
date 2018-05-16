@@ -80,8 +80,9 @@
   [robot]
   (let [all-moves (keys arrows)]
     (let [before-move (utils/acquire-screen robot)
-          initial-board (board/read-board before-move)]
-        (perform-move robot (move-logic/greedy-moves-evaluator initial-board)))))
+          initial-board (board/read-board before-move)
+          next-symbol (preview/next-move before-move)]
+        (perform-move robot (move-logic/minimax-moves-evaluator initial-board next-symbol)))))
 
 (defn execute-moves [delay function]
   (utils/sleep delay)
