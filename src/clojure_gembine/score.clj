@@ -5,20 +5,20 @@
 (defn- score-empty-spaces
   "Score empty board cells using this mapping:
 
-+-------+
-|2 3 3 2|
-|3 4 4 3|
-|3 4 4 3|
-|2 3 3 2|
-+-------+"
+2.0 * +-------+
+      |2 3 3 2|
+      |3 4 4 3|
+      |3 4 4 3|
+      |2 3 3 2|
+      +-------+"
   [board]
-  (reduce + (map *
-                 (map #(if (nil? %) 1 0)
-                      (flatten board))
-                 [2 3 3 2
-                  3 4 4 3
-                  3 4 4 3
-                  2 3 3 2])))
+  (* 2.0 (reduce + (map *
+                  (map #(if (nil? %) 1 0)
+                       (flatten board))
+                  [2 3 3 2
+                   3 4 4 3
+                   3 4 4 3
+                   2 3 3 2]))))
 
 (defn- score-tuple
   "Return 2 if the pair is comprised of non nil identical values, 0 otherwise"
