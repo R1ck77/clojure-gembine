@@ -75,16 +75,14 @@
 (defn test-dummy-move
   "Must return true when is game over, nil otherwise"
   [robot]
-  (let [moves (keys arrows)]
-    (perform-move robot (rand-nth moves))))
+  (perform-move robot (rand-nth game/moves)))
 
 (defn test-valid-moves-only
   [robot logic]
-  (let [all-moves (keys arrows)]
-    (let [before-move (utils/acquire-screen robot)
-          initial-board (board/read-board before-move)
-          next-symbol (preview/next-move before-move)]
-        (perform-move robot (logic initial-board next-symbol)))))
+  (let [before-move (utils/acquire-screen robot)
+        initial-board (board/read-board before-move)
+        next-symbol (preview/next-move before-move)]
+    (perform-move robot (logic initial-board next-symbol))))
 
 (defn execute-moves [delay function]
   (utils/sleep delay)

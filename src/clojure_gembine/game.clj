@@ -12,6 +12,8 @@
                 :gs :gp
                 :gp :gp}) ;;; this one is completely made up
 
+(def moves #{:up :down :left :right})
+
 (defn rotate
   "Rotate the board in a way that the right move corresponds to the previous up move"
   [board]
@@ -120,3 +122,43 @@ Returns the new board"
   [board move element]
   (map #(insert-element board move % element)
        (insertion-indices board move)))
+
+
+
+;;; this will probably kill most of the other functions in this module…
+
+(def direct-transform-for-move {:down #(-> % rotate)
+                                :up #(-> % rotate rotate rotate)
+                                :left identity
+                                :right #(-> % rotate rotate)})
+
+(def inverse-transform-for-move {:down #(-> % rotate rotate rotate)
+                                 :up #(-> % rotate)
+                                 :left identity
+                                 :right #(-> %  rotate rotate)})
+
+(defn all-left-insertions-of
+  [board element]
+  (map #(assoc-in board [% 3] element)
+       (filter #(nil? (get-in board [% 3]))
+               [0 1 2 3])))
+
+(defn all-left-insertions [board candidates]
+  (mapcat #(all-left-insertions-of board %) candidates))
+
+(defn move-outcomes
+  [board move next-candidates]
+  (vec (map #(if (not= :game-over %) ((get inverse-transform-for-move move) %) :game-over)
+        (let [rotated-board ((get direct-transform-for-move move) board)]
+          (let [evolved-board (step rotated-board)]
+            (if (= evolved-board rotated-board)
+              [:game-over]
+              (all-left-insertions evolved-board next-candidates)))))))
+
+(defn evolve-board
+  "Evolve a board into a vector of possible outcomes"
+  [board next-candidates]
+  (let [ordered-moves (vec moves)]
+    (zipmap ordered-moves
+            (map #(move-outcomes board % next-candidates)
+                 ordered-moves))))
