@@ -87,7 +87,7 @@
 (defn execute-moves [delay function]
   (utils/sleep delay)
   (let [robot (new-robot)
-        logic move-logic/minimax-moves-evaluator]
+        logic (move-logic/create-minimax-two-ahead-moves-evaluator)]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
       (repeatedly #(function robot logic))))))

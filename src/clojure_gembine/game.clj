@@ -148,7 +148,7 @@ Returns the new board"
 
 (defn move-outcomes
   [board move next-candidates]
-  (vec (map #(if (not= :game-over %) ((get inverse-transform-for-move move) %) :game-over)
+  (vec (map #(if (= :game-over %) :game-over ((get inverse-transform-for-move move) %))
         (let [rotated-board ((get direct-transform-for-move move) board)]
           (let [evolved-board (step rotated-board)]
             (if (= evolved-board rotated-board)
