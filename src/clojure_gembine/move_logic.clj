@@ -25,8 +25,8 @@
   (vec
    (mapcat (fn [board]
              (if (= :game-over board)
-               (vector :game-over)
-               (expanded-moves board next-elements)))
+               (vector -10)
+               (map score/simple-score (expanded-moves board next-elements))))
            boards)))
 
 (defn- keep-only-feasible
@@ -49,8 +49,7 @@ Ignores the weight of dead paths…"
                     (sort-by compare-moves
                              (map (fn [[move boards]]
                                     (vector move (apply min
-                                                        (map score/simple-score
-                                                             (expand-moves boards @allowed-next-elements)))))
+                                                        (expand-moves boards @allowed-next-elements))))
                                   (game/evolve-board board #{next-element})))))
               [0 0]))))
 
