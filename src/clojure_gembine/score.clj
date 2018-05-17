@@ -40,6 +40,7 @@
 (defn simple-score
   "Very simple board scoring:
 
+- :game-over is evaluated to -1
 - empty places are scored depending on the position:
 
 +-------+
@@ -53,5 +54,7 @@
 
 worth 2 at the board corners, 3 in the borders, 4 in the middle "
   [board]
-  (+ (score-empty-spaces board)
-     (score-adjacent-values board)))
+  (if (= board :game-over)
+    -1
+    (+ (score-empty-spaces board)
+       (score-adjacent-values board))))
