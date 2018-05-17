@@ -11,6 +11,8 @@
 (defn load-opencv-libraries []
   (clojure.lang.RT/loadLibrary org.opencv.core.Core/NATIVE_LIBRARY_NAME))
 
+(load-opencv-libraries)
+
 (defn sleep [ms]
   (Thread/sleep ms))
 
