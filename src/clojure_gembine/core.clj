@@ -69,6 +69,9 @@
   (let [screenshot (utils/acquire-screen robot)]
     (when (preview/is-game-over? screenshot)
       (println "New game!")
+      (let [output (java.io.File/createTempFile "screenshot-" ".png")]
+        (println (format "Saving screenshot to %s…" (.getAbsolutePath output)))
+        (javax.imageio.ImageIO/write screenshot "PNG" output))
       (tap-space)
       (utils/sleep move-delay-ms))))
 
