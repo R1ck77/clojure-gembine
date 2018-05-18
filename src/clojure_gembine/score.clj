@@ -40,21 +40,20 @@
 (defn simple-score
   "Very simple board scoring:
 
-- :game-over is evaluated to -1
-- empty places are scored depending on the position:
+  - empty places are scored depending on the position:
 
-+-------+
-|2 3 3 2|
-|3 4 4 3|
-|3 4 4 3|
-|2 3 3 2|
-+-------+
+  +-------+
+  |2 3 3 2|
+  |3 4 4 3|
+  |3 4 4 3|
+  |2 3 3 2|
+  +-------+
 
-- adjacent values of the same type are always scored 2, without regard for grouping or position.
+  - adjacent values of the same type are always scored 2, without regard for grouping or position.
 
-worth 2 at the board corners, 3 in the borders, 4 in the middle "
+  worth 2 at the board corners, 3 in the borders, 4 in the middle "
   [board]
   (if (= board :game-over)
-    -1
+    0
     (+ (score-empty-spaces board)
        (score-adjacent-values board))))
