@@ -56,6 +56,32 @@
                 (next-move board @available-next solver))
               (starting-board)))))
 
+(defn- average [count sum]
+  (double (/ sum count)))
+
+(defn- unsafe-std-dev [count sum squares]
+  (double (Math/sqrt (- (/ squares count)
+                        (Math/pow (/ sum count) 2)))))
+
+(defn- std-dev [count sum squares]
+  (if (< count 1)
+    :NA
+    (unsafe-std-dev count sum squares)))
+
+(defn- accumulate-values [xn]
+  (reduce (fn [[count sum squares] n]
+            (vector (inc count)
+                    (+ sum n)
+                    (+ squares (Math/pow n 2))))
+          [0 0 0] xn))
+
+(defn statistics [xn]
+  (apply (fn [count sum squares]
+           (vector (average count sum)
+                   (std-dev count sum squares)))
+         (accumulate-values xn)))
+
 (defn test-drive-solver [solver iterations]
-  (int
-   (/ (reduce #(+ % %2) (pmap (fn [_] (start-game solver)) (range iterations))) iterations)))
+  (statistics
+   (pmap (fn [_] (start-game solver))
+         (range iterations))))
