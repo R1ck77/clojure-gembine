@@ -64,7 +64,3 @@ Ignores the weight of dead paths…"
                                     (vector move (rate-expanded-moves (expand-moves boards @allowed-next-elements))))
                                   (game/evolve-board board #{next-element})))))
               [0 0]))))
-
-
-
-
