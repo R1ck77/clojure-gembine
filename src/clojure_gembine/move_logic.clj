@@ -9,38 +9,41 @@
   [[_ points]]
   (- points))
 
-(defn minimax-moves-evaluator [board next-element]
-  (get-in
-   (vec
-    (sort-by compare-moves
-             (map (fn [[move boards]]
-                    (vector move (apply min (map score/simple-score boards))))
-                  (game/evolve-board board #{next-element}))))
-   [0 0]))
+(defn minimax-moves-evaluator
+  ([board next-element]
+   (minimax-moves-evaluator board next-element score/simple-score))
+  ([board next-element score-function]
+   (get-in
+    (vec
+     (sort-by compare-moves
+              (map (fn [[move boards]]
+                     (vector move (apply min (map score-function boards))))
+                   (game/evolve-board board #{next-element}))))
+    [0 0])))
 
 (defn- extract-expanded-moves-composite-score
   "Return a score in the form: [average, contains :game-over yes/no] "
-  [boards]
+  [boards score-function]
   (let [has-game-over (boolean (some #{:game-over} boards))]
-    (vector (/ (apply + (map score/simple-score boards)) (count boards))
+    (vector (/ (apply + (map score-function boards)) (count boards))
             has-game-over)))
 
 (defn- expanded-moves [board next-elements]
   (mapcat second (game/evolve-board board next-elements)))
 
 (defn- expand-moves
-  [boards next-elements]
+  [boards next-elements score-function]
   (vec
    (map (fn [board]
           (if (= :game-over board)
-            [(score/simple-score :game-over) true]
-            (extract-expanded-moves-composite-score (expanded-moves board next-elements))))
+            [(score-function :game-over) true]
+            (extract-expanded-moves-composite-score (expanded-moves board next-elements) score-function)))
         boards)))
 
-(defn- rate-expanded-moves [composite-scores]
+(defn- rate-expanded-moves [composite-scores score-function]
   (if (some #(not (second %)) composite-scores)
     (apply min (map first composite-scores))
-    (score/simple-score :game-over)))
+    (score-function :game-over)))
 
 (defn- keep-only-feasible
   "Filter out impossible moves.
@@ -53,14 +56,16 @@
 (defn create-minimax-two-ahead-moves-evaluator
   "Create a minimax that looks 2 steps ahead. Not optimized, sketched code
 
-Ignores the weight of dead paths…"
-  []
-  (let [allowed-next-elements (atom #{:rb :rB})]
-    (fn [board next-element]
-      (swap! allowed-next-elements #(conj % next-element))
-      (get-in (vec (keep-only-feasible board
-                    (sort-by compare-moves
-                             (map (fn [[move boards]]
-                                    (vector move (rate-expanded-moves (expand-moves boards @allowed-next-elements))))
-                                  (game/evolve-board board #{next-element})))))
-              [0 0]))))
+  Ignores the weight of dead paths…"
+  ([]
+   (create-minimax-two-ahead-moves-evaluator score/simple-score))
+  ([score-function]
+   (let [allowed-next-elements (atom #{:rb :rB})]
+     (fn [board next-element]
+       (swap! allowed-next-elements #(conj % next-element))
+       (get-in (vec (keep-only-feasible board
+                                        (sort-by compare-moves
+                                                 (map (fn [[move boards]]
+                                                        (vector move (rate-expanded-moves (expand-moves boards @allowed-next-elements score-function) score-function)))
+                                                      (game/evolve-board board #{next-element})))))
+               [0 0])))))

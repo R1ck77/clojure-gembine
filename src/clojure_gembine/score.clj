@@ -57,3 +57,11 @@
     0
     (+ (score-empty-spaces board)
        (score-adjacent-values board))))
+
+(defn weighted-score
+  "Like simple score, but the contribute of the two terms, nil and pairs can be weighted"
+  [empty-weight pairs-weight board]
+    (if (= board :game-over)
+    0
+    (+ (* empty-weight (score-empty-spaces board))
+       (* pairs-weight (score-adjacent-values board)))))
