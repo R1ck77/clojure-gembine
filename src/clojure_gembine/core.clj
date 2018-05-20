@@ -32,14 +32,12 @@ and you are welcome to redistribute it under the terms of the GPL v3")
 (defn- perform-move [robot direction]
   (move robot direction)
   (let [screenshot (utils/acquire-screen robot)]
-    (when (end-game/secret-level? screenshot)
-      (end-game/end-game-ritual robot))
     (when (preview/is-game-over? screenshot)
       (println "New game!")
       (let [output (java.io.File/createTempFile "screenshot-" ".png")]
         (println (format "Saving screenshot to %s…" (.getAbsolutePath output)))
         (javax.imageio.ImageIO/write screenshot "PNG" output))
-      (keyboard/tap-space)
+      (keyboard/tap-space robot)
       (utils/sleep move-delay-ms))))
 
 (defn move-randomly
@@ -52,7 +50,13 @@ and you are welcome to redistribute it under the terms of the GPL v3")
   (let [before-move (utils/acquire-screen robot)
         initial-board (board/read-board before-move)
         next-symbol (preview/next-move before-move)]
-    (perform-move robot (logic initial-board next-symbol))))
+    (if (nil? next-symbol)
+      (do
+        (utils/sleep 3000)
+        (when (end-game/secret-level? (utils/acquire-screen robot))
+          (println "End game!")
+          (end-game/end-game-ritual robot)))
+      (perform-move robot (logic initial-board next-symbol)))))
 
 (defn execute-moves
   ([function]

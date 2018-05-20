@@ -9,29 +9,30 @@
 
 (defn tap-key
   "Do a quick tap on the keyboard"
-  ([code]
-   (tap-key (utils/new-robot) code))
-  ([robot code]
-   (doto robot
-     (.keyPress code)
-     (.keyRelease code))))
+  [robot code]
+  (.keyPress robot code)
+  (utils/sleep 100)
+  (.keyRelease robot code))
 
 (defn tap-character
   "Tap the specific char"
-  ([char]
-   (tap-character (utils/new-robot) char))
-  ([robot char]
-   (tap-key robot
-            (KeyEvent/getExtendedKeyCodeForChar (int char)))))
+  [robot char]
+  (tap-key robot
+           (KeyEvent/getExtendedKeyCodeForChar (int char))))
 
 (defn tap-space
-  ([] (tap-space (utils/new-robot)))
-  ([robot]
-   (tap-key robot KeyEvent/VK_SPACE)))
+  [robot]
+  (tap-key robot KeyEvent/VK_SPACE))
+
+(defn tap-enter
+  [robot]
+  (tap-key robot KeyEvent/VK_ENTER))
+
+(defn tap-esc
+  [robot]
+  (tap-key robot KeyEvent/VK_ESCAPE))
 
 (defn tap-arrow
-  ([direction]
-   (tap-arrow (utils/new-robot) direction))
-  ([robot direction]
-   (tap-key robot (get arrows direction))))
+  [robot direction]
+  (tap-key robot (get arrows direction)))
 
