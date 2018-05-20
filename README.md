@@ -1,6 +1,6 @@
 # clojure-gembine
 
-Solve with automation the minigame "Gembine" from 10tons excellent JYDGE.
+Solve with automation the minigame "Gembine" from 10tons' excellent JYDGE.
 
 ## Installation
 
@@ -19,7 +19,9 @@ If the installation is correct, running ``lein run`` in the main project directo
 
 ## Usage
 
-To make effective use of this code, you need to have a GEMBINE game already running in background, and it must *not be in tutorial mode*, which means you have to enter the GEMBINE minigame and restart it manually.
+To make effective use of this code, you need to have a full-screen GEMBINE game already running in background, and it must *not be in tutorial mode*, which means you have to enter the GEMBINE minigame and restart it manually.
+
+This program will also *not work* on multi-monitor setups!
 
 Without closing JYDGE but just putting it in background, run
 
@@ -29,11 +31,9 @@ It will start a countdown of 10 seconds. *You must to switch to GEMBINE and make
 
 ### Bugs
 
-This game has been developed with a Full HD monitor in mind. I have added a decent 
+This program has been developed with a setup with a single Full HD monitor in mind. I have added a semi-decent rescaling feature that should make the game work to an extent on other monitor ratios, but that part of the code has not been tested extensively, so use other ratios at your own risk, but it will still fail miserably on a multi-monitor rig.
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+The solvers are under-optimized, and will bend old hardware, although they should work (albeit slowly) pretty much everywhere.
 
 ## License
 
@@ -41,7 +41,7 @@ Copyright © 2018 Riccardo Di Meo
 
 Distributed under the GNU General Public License v3.
 
-This work is intended as an educational program, a funny hack, and a tribute the game it uses as a prop.
+This work is intended as an educational program, a funny hack, and a tribute to a very nice top down shooter.
 
 I'm not affiliated in any way with 10tons or their associates: JYDGE and GEMBINE, along with any trademarks are the properties of their respective owners.
 
