@@ -21,6 +21,9 @@
 (defonce green-square (read-template "green-square.png"))
 (defonce green-pentagon (read-template "green-pentagon.png"))
 
+(def secret-level-area [800 490 1150 590])
+(defonce entering-secret-area (read-template "entering-secret-area.png"))
+
 (defn- board-slice [n a b]
   (let [cell-size (int (/ (- b a) 4))
         start (+ a (* n cell-size))]
