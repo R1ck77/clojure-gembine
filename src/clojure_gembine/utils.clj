@@ -20,6 +20,9 @@
 (defn sleep [ms]
   (Thread/sleep ms))
 
+(defn new-robot []
+  (Robot.))
+
 (defn- get-screen-size []
   (let [dimension (.getScreenSize (Toolkit/getDefaultToolkit))]
     [(.width dimension) (.height dimension)]))

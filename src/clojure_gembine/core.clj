@@ -1,6 +1,5 @@
 (ns clojure-gembine.core
   (:import [java.awt Robot Rectangle]
-           [java.awt.event KeyEvent]
            [javax.imageio ImageIO])
   (:require [clojure-gembine.parameters :refer :all]
             [clojure-gembine.utils :as utils]
@@ -8,59 +7,21 @@
             [clojure-gembine.game :as game]
             [clojure-gembine.move-logic :as move-logic]
             [clojure-gembine.preview :as preview]
-            [clojure-gembine.end-game :as end-game])
+            [clojure-gembine.end-game :as end-game]
+            [clojure-gembine.keyboard :as keyboard])
   (:gen-class))
 
 (def move-delay-ms 1000)
-
-(def arrows {:up KeyEvent/VK_UP
-             :down KeyEvent/VK_DOWN
-             :left KeyEvent/VK_LEFT
-             :right KeyEvent/VK_RIGHT})
 
 (def license-blurb "clojure-gembine - Copyright (C) 2018  Riccardo Di Meo
 This program comes with ABSOLUTELY NO WARRANTY; This is free software, 
 and you are welcome to redistribute it under the terms of the GPL v3")
 
-(defn new-robot []
-  (Robot.))
-
-(defn- rectangle [ax ay bx by]
-  (Rectangle. ax ay bx by))
-
-(defn tap-key
-  "Do a quick tap on the keyboard"
-  ([code]
-   (tap-key (new-robot) code))
-  ([robot code]
-   (doto robot
-     (.keyPress code)
-     (.keyRelease code))))
-
-(defn tap-character
-  "Tap the specific char"
-  ([char]
-   (tap-character (new-robot) char))
-  ([robot char]
-   (tap-key robot
-            (KeyEvent/getExtendedKeyCodeForChar (int char)))))
-
-(defn tap-space
-  ([] (tap-space (new-robot)))
-  ([robot]
-   (tap-key robot KeyEvent/VK_SPACE)))
-
-(defn tap-arrow
-  ([direction]
-   (tap-arrow (new-robot) direction))
-  ([robot direction]
-   (tap-key robot (get arrows direction))))
-
 (defn move
   ([direction]
-   (move (new-robot) direction))
+   (move (utils/new-robot) direction))
   ([robot direction]
-   (tap-arrow robot direction)
+   (keyboard/tap-arrow robot direction)
    (utils/sleep move-delay-ms)))
 
 (defn is-gembine? 
@@ -78,7 +39,7 @@ and you are welcome to redistribute it under the terms of the GPL v3")
       (let [output (java.io.File/createTempFile "screenshot-" ".png")]
         (println (format "Saving screenshot to %s…" (.getAbsolutePath output)))
         (javax.imageio.ImageIO/write screenshot "PNG" output))
-      (tap-space)
+      (keyboard/tap-space)
       (utils/sleep move-delay-ms))))
 
 (defn move-randomly
@@ -97,7 +58,7 @@ and you are welcome to redistribute it under the terms of the GPL v3")
   ([function]
    (execute-moves function move-logic/minimax-moves-evaluator))
   ([function logic]
-   (let [robot (new-robot)]
+   (let [robot (utils/new-robot)]
      (if (is-gembine? (utils/acquire-screen robot))
        (dorun
         (repeatedly #(function robot logic)))
