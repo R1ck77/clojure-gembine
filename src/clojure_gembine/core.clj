@@ -7,7 +7,8 @@
             [clojure-gembine.board :as board]
             [clojure-gembine.game :as game]
             [clojure-gembine.move-logic :as move-logic]
-            [clojure-gembine.preview :as preview])
+            [clojure-gembine.preview :as preview]
+            [clojure-gembine.end-game :as end-game])
   (:gen-class))
 
 (def move-delay-ms 1000)
@@ -70,6 +71,8 @@ and you are welcome to redistribute it under the terms of the GPL v3")
 (defn- perform-move [robot direction]
   (move robot direction)
   (let [screenshot (utils/acquire-screen robot)]
+    (when (end-game/secret-level? screenshot)
+      (end-game/end-game-ritual robot))
     (when (preview/is-game-over? screenshot)
       (println "New game!")
       (let [output (java.io.File/createTempFile "screenshot-" ".png")]
@@ -90,13 +93,15 @@ and you are welcome to redistribute it under the terms of the GPL v3")
         next-symbol (preview/next-move before-move)]
     (perform-move robot (logic initial-board next-symbol))))
 
-(defn execute-moves [function]
-  (let [robot (new-robot)
-        logic move-logic/minimax-moves-evaluator]
-    (if (is-gembine? (utils/acquire-screen robot))
-     (dorun
-      (repeatedly #(function robot logic)))
-     (println "This doesn't look like gembine! Aborting…"))))
+(defn execute-moves
+  ([function]
+   (execute-moves function move-logic/minimax-moves-evaluator))
+  ([function logic]
+   (let [robot (new-robot)]
+     (if (is-gembine? (utils/acquire-screen robot))
+       (dorun
+        (repeatedly #(function robot logic)))
+       (println "This doesn't look like gembine! Aborting…")))))
 
 (defn -main
   "Start a gembine automatic player in 10 seconds"
