@@ -40,5 +40,20 @@
   (let [[x y w h] (get-board-cell-coordinates column row)]
     (.getSubimage screen-bufimage x y w h)))
 
-(defn get-screen-section [screen-bufimage [x1 y1 x2 y2]]
+(defn resize-area [image-size
+                   [x1 y1 x2 y2]]
+  (let [ratio (map / image-size [1920 1080])
+        xratio (first ratio)
+        yratio (second ratio)]
+    (vector (* x1 xratio)
+            (* y1 yratio)
+            (* x2 xratio)
+            (* y2 yratio))))
+
+(defn get-subimage [screen-bufimage [x1 y1 x2 y2]]
   (.getSubimage screen-bufimage x1 y1 (- x2 x1) (- y2 y1)))
+
+(defn get-screen-section [screen-bufimage region]
+  (let [corrected-size (resize-area [(.getWidth screen-bufimage) (.getHeight screen-bufimage)]
+                                    region)]
+    (get-subimage screen-bufimage region)))
