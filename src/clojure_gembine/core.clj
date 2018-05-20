@@ -89,13 +89,19 @@
 (defn execute-moves [function]
   (let [robot (new-robot)
         logic move-logic/minimax-moves-evaluator]
-    (when (is-gembine? (utils/acquire-screen robot))
+    (if (is-gembine? (utils/acquire-screen robot))
      (dorun
-      (repeatedly #(function robot logic))))))
+      (repeatedly #(function robot logic)))
+     (println "This doesn't look like gembine! Aborting…"))))
+
+(def license-blurb "clojure-gembine - Copyright (C) 2018  Riccardo Di Meo
+This program comes with ABSOLUTELY NO WARRANTY; This is free software, 
+and you are welcome to redistribute it under the terms of the GPL v3")
 
 (defn -main
   "Start a gembine automatic player in 10 seconds"
   [& args]
+  (println license-blurb)
   (doall (map (fn [n]
                 (print (format "Starting in %d…    \r" n))
                 (flush)
