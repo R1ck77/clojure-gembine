@@ -1,7 +1,6 @@
 (defproject clojure-gembine "0.1.0-SNAPSHOT"
-  :description "Exercise to solve Jydge's Gembine with automation"
-  :license {:name "GNU General public license v3.0"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :description "Exercise that automates gembine, a minigame from the excellent 10tons Jydge"
+  :license {:name "GNU General Public License version 3"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [commons-io/commons-io "2.6"]
                  [opencv/opencv "3.4.1"]
