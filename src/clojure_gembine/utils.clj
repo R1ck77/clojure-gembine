@@ -4,9 +4,13 @@
            [java.io File FileOutputStream]
            [javax.imageio ImageIO]
            [java.awt Rectangle Robot Toolkit]
+           [java.awt.image AffineTransformOp BufferedImage]
+           [java.awt.geom AffineTransform]
            [org.opencv.imgproc Imgproc]
            [org.opencv.imgcodecs Imgcodecs]
            [org.opencv.core Core CvType Mat MatOfInt]))
+
+(def HD-size [1920 1080])
 
 (defn load-opencv-libraries []
   (clojure.lang.RT/loadLibrary org.opencv.core.Core/NATIVE_LIBRARY_NAME))
@@ -20,12 +24,33 @@
   (let [dimension (.getScreenSize (Toolkit/getDefaultToolkit))]
     [(.width dimension) (.height dimension)]))
 
+(defn- force-resize-to-fullHD [screenshot [x-factor y-factor]]
+  (let [affine-transform (doto (AffineTransform.)
+                           (.scale x-factor y-factor))
+        affine-transform-op (AffineTransformOp. affine-transform AffineTransformOp/TYPE_BILINEAR)
+        output (BufferedImage. (first HD-size) (second HD-size) (.getType screenshot))]
+    (.filter affine-transform-op screenshot output)
+    output))
+
+(defn- resize-to-fullHD [screenshot]
+  (let [orig-size [(.getWidth screenshot)
+                   (.getHeight screenshot)]]
+    (if (= orig-size HD-size)
+      screenshot
+      (force-resize-to-fullHD screenshot (map / HD-size orig-size)))))
+
+(defn- capture-screen [robot [x y width height]]
+  (.createScreenCapture robot (Rectangle. x y width height)))
+
 (defn acquire-screen
+  "It resizes the capture screen to full HD
+
+Granted, it's slower than resizing only the tiles to match, but it's soooooo easy :D"
   ([]
    (acquire-screen (Robot.)))
   ([robot]
    (let [[width height] (get-screen-size)]
-     (.createScreenCapture robot (Rectangle. 0 0 width height)))))
+     (resize-to-fullHD (capture-screen robot [0 0 width height])))))
 
 (defn template-as-file
   "Load a template from the resources and save it to a temporary file
