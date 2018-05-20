@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # compile and install the code with
-#    cmake -DCMAKE_INSTALL_PREFIX:PATH=#{HOME}/local/opencv cmake -DBUILD_SHARED_LIBS=OFF ..
+#    cmake -DCMAKE_INSTALL_PREFIX:PATH=${HOME}/local/opencv cmake -DBUILD_SHARED_LIBS=OFF ..
 #    make -j 8 install
 # and execute:
 #    execstack -c ${HOME}/local/share/OpenCV/java/libopencv_java341.so 
