@@ -75,27 +75,32 @@
       (tap-space)
       (utils/sleep move-delay-ms))))
 
-(defn test-dummy-move
+(defn move-randomly
   "Must return true when is game over, nil otherwise"
   [robot]
   (perform-move robot (rand-nth game/moves)))
 
-(defn test-valid-moves-only
+(defn move-with-logic
   [robot logic]
   (let [before-move (utils/acquire-screen robot)
         initial-board (board/read-board before-move)
         next-symbol (preview/next-move before-move)]
     (perform-move robot (logic initial-board next-symbol))))
 
-(defn execute-moves [delay function]
-  (utils/sleep delay)
+(defn execute-moves [function]
   (let [robot (new-robot)
-        logic (move-logic/create-minimax-two-ahead-moves-evaluator)]
+        logic move-logic/minimax-moves-evaluator]
     (when (is-gembine? (utils/acquire-screen robot))
      (dorun
       (repeatedly #(function robot logic))))))
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Start a gembine automatic player in 10 seconds"
   [& args]
-  (println "Hello, World!"))
+  (doall (map (fn [n]
+                (print (format "Starting in %d…    \r" n))
+                (flush)
+                (utils/sleep 1000))
+              (range 10 -1 -1)))
+  (println "Starting!                      ")
+  (execute-moves move-with-logic))
