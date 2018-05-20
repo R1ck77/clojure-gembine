@@ -2,17 +2,13 @@
   (require [clojure-gembine.utils :refer [read-template]]))
 
 (def title-area [811 202 1105 276])
-
 (defonce gembine-title (read-template "gembine-title.png"))
 
 (def message-area [1330 550 1490 700])
-
 (defonce game-over (read-template "game-over.png"))
 (defonce no-message (read-template "no-message.png"))
 
-
 (def board-area [758 420 1163 825])
-
 (defonce void-board (read-template "void-board.png"))
 (defonce red-bead (read-template "red-bead.png"))
 (defonce red-ball (read-template "red-ball.png"))

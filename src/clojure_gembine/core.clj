@@ -63,7 +63,6 @@
   (let [title-region (get-screen-section screenshot title-area)]
     (> (nth (utils/match-template title-region gembine-title) 2) 0.95)))
 
-
 (defn- perform-move [robot direction]
   (move robot direction)
   (let [screenshot (utils/acquire-screen robot)]

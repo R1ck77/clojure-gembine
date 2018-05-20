@@ -1,7 +1,6 @@
 (ns clojure-gembine.game)
 
-(def next-cell {
-                :rb :rB
+(def next-cell {:rb :rB
                 :rB :rt
                 :rt :rs
                 :rs :rp
@@ -10,7 +9,7 @@
                 :gB :gt
                 :gt :gs
                 :gs :gp
-                :gp :gp}) ;;; this one is completely made up
+                :gp :gp}) ;;; this one is completely made up: I don't know what comes here
 
 (def moves #{:up :down :left :right})
 
@@ -21,9 +20,9 @@
    (map (fn [index] (vec (map #(nth % index) (reverse board))))
         [0 1 2 3])))
 
-
+;;; TODO/FIXME these rule are overkill. They can probably be simplified…
 (defn- tuple-conversion [a b]
-  (cond   ;;; TODO/FIXME these rule are overkill. They can be simplified…
+  (cond   
     ;;; same symbol on both → transmutation
     (and (= a b) (not (nil? a))) [(get next-cell a) nil]
     ;;; second cell empty → no movement
@@ -83,49 +82,6 @@ Easiest (and dumbest) way is to try to perform the move and see if anything chan
 Good enough performance wise, at least for now."
   [board direction]
   (not (= board (move board direction))))
-
-(defn- board-indexed-row-ends [board]
-  (map #(vector % %2) [0 1 2 3 4] (map #(nth % 3) board)))
-
-(defn- left-insertion-indices
-  "Available row indices that have a space for insertion at the end"
-  [board]
-  (map first (filter #(nil? (second %)) (board-indexed-row-ends board))))
-
-(defn insertion-indices
-  "Available indices for insertion in the specified direction.
-
-The indices follow the clockwise convention"
-  [board direction]
-  (Tf board direction left-insertion-indices))
-
-(defn- left-insert-element
-  "Left insert the specific element at the specific index.
-
-Doesn't check for wrong indexes and overwrites the corresponding values.
-
-Returns the new board"
-  [board index element]
-  (assoc-in board [index 3] element))
-
-(defn insert-element
-  "Insert a new element the way the game would
-
-Doesn't check for wrong indexes and overwrites the corresponding values.
-
-Returns the new board"
-  [board direction index element]
-  (TfinvT board direction #(left-insert-element % index element)))
-
-(defn all-insertions
-  "TODO/FIXME could be worth some optimization, and remove some unneeded rotations"
-  [board move element]
-  (map #(insert-element board move % element)
-       (insertion-indices board move)))
-
-
-
-;;; this will probably kill most of the other functions in this module…
 
 (def direct-transform-for-move {:down #(-> % rotate)
                                 :up #(-> % rotate rotate rotate)
