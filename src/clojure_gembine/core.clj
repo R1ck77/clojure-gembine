@@ -17,6 +17,10 @@
              :left KeyEvent/VK_LEFT
              :right KeyEvent/VK_RIGHT})
 
+(def license-blurb "clojure-gembine - Copyright (C) 2018  Riccardo Di Meo
+This program comes with ABSOLUTELY NO WARRANTY; This is free software, 
+and you are welcome to redistribute it under the terms of the GPL v3")
+
 (defn new-robot []
   (Robot.))
 
@@ -93,10 +97,6 @@
      (dorun
       (repeatedly #(function robot logic)))
      (println "This doesn't look like gembine! Aborting…"))))
-
-(def license-blurb "clojure-gembine - Copyright (C) 2018  Riccardo Di Meo
-This program comes with ABSOLUTELY NO WARRANTY; This is free software, 
-and you are welcome to redistribute it under the terms of the GPL v3")
 
 (defn -main
   "Start a gembine automatic player in 10 seconds"
