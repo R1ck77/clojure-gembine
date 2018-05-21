@@ -11,9 +11,16 @@
                       :gB green-ball
                       :gt green-triangle
                       :gs green-square
-                      :gp green-pentagon})
+                      :gp green-pentagon
+                      :bb blue-bead
+                      :bB blue-ball
+                      :bt blue-triangle
+                      :bs blue-square
+                      :bp blue-pentagon})
 
-(def symbol-check-order [:rb :rB :rt :rs :rp :gb :gB :gt :gs :gp])
+(def symbol-check-order [:rb :rB :rt :rs :rp
+                         :gb :gB :gt :gs :gp
+                         :bb :bB :bt :bs :bp])
 
 (def match-threshold 0.80)
 

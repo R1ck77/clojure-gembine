@@ -9,7 +9,11 @@
                 :gB :gt
                 :gt :gs
                 :gs :gp
-                :gp :gp}) ;;; this one is completely made up: I don't know what comes here
+                :gp :bb
+                :bb :bB
+                :bB :bt
+                :bt :bp
+                :bp :bp}) ;;; this one is completely made up: I don't know what comes here
 
 (def moves #{:up :down :left :right})
 

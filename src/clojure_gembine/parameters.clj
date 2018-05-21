@@ -20,6 +20,11 @@
 (defonce green-triangle (read-template "green-triangle.png"))
 (defonce green-square (read-template "green-square.png"))
 (defonce green-pentagon (read-template "green-pentagon.png"))
+(defonce blue-bead (read-template "blue-bead.png"))
+(defonce blue-ball (read-template "blue-ball.png"))
+(defonce blue-triangle (read-template "blue-triangle.png"))
+(defonce blue-square (read-template "blue-square.png"))
+(defonce blue-pentagon (read-template "blue-pentagon.png"))
 
 (def secret-level-area [800 490 1150 590])
 (defonce entering-secret-area (read-template "entering-secret-area.png"))
