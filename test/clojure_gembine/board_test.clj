@@ -45,4 +45,10 @@
             [:gb :rB :rs :rB]
             [nil :gB :rp :gt]
             [:rB :rb :rs :rb]]
-         (read-board (utils/load-mock-image 7))))))
+           (read-board (utils/load-mock-image 7)))))
+  (testing "result on mock 11 (blue gem)"
+    (is (= [[:rt :rB :rs :gb]
+            [:rp :gb :rb :rp]
+            [:rB :bb :rs :rs]
+            [:rt :rs :rt :rp]]
+           (read-board (utils/load-mock-image 11))))))
