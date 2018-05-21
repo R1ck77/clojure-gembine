@@ -54,7 +54,7 @@ and you are welcome to redistribute it under the terms of the GPL v3")
       (do
         (utils/sleep 3000)
         (when (end-game/secret-level? (utils/acquire-screen robot))
-          (println "End game!")
+          (println "Secret level!")
           (end-game/end-game-ritual robot)))
       (perform-move robot (logic initial-board next-symbol)))))
 
