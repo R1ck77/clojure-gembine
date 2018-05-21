@@ -23,12 +23,21 @@
       vec
       (get-in [0 0])))
 
+(defn- keep-only-feasible
+  "Filter out impossible moves.
+
+  Required because the 2-deep minimax doesn't distinguishes between immediate game-over and late one,
+  and this will mess the end game when minimax lvl 2 foresee a defeat"
+  [board results]
+  (filter (fn [[move _]] (game/can-move? board move))
+          results))
+
 (defn minimax-moves-evaluator
   ([board next-element]
    (minimax-moves-evaluator board next-element score/simple-score))
   ([board next-element score-function]
    (get-best-minimax-move
-    (minimax-score-moves board #{next-element} score-function))))
+    (keep-only-feasible board (minimax-score-moves board #{next-element} score-function)))))
 
 (defn- step-2-minimax-scores
   [board next-elements score-function]
@@ -44,15 +53,6 @@
 (defn- step-2-minimax-computer-move
   [move boards next-elements score-function]
   (vector move (apply min (map #(step-2-minimax-my-move % next-elements score-function) boards))))
-
-(defn- keep-only-feasible
-  "Filter out impossible moves.
-
-  Required because the 2-deep minimax doesn't distinguishes between immediate game-over and late one,
-  and this will mess the end game when minimax lvl 2 foresee a defeat"
-  [board results]
-  (filter (fn [[move _]] (game/can-move? board move))
-          results))
 
 (defn create-minimax-level-2-solver
   "Create a minimax that looks 2 steps ahead. Not optimized, sketched code
