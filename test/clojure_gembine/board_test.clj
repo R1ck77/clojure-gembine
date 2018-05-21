@@ -51,4 +51,10 @@
             [:rp :gb :rb :rp]
             [:rB :bb :rs :rs]
             [:rt :rs :rt :rp]]
-           (read-board (utils/load-mock-image 11))))))
+           (read-board (utils/load-mock-image 11)))))
+  (testing "result on mock 12"
+    (is (= [[:rp :rs :gb :rB]
+            [:rB :gt :gB :rp]
+            [:rs :gb :rs :gs]
+            [:rt :rp :rB :rB]]
+           (read-board (utils/load-mock-image 12))))))
