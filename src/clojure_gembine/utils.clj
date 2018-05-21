@@ -6,6 +6,7 @@
            [java.awt Rectangle Robot Toolkit]
            [java.awt.image AffineTransformOp BufferedImage]
            [java.awt.geom AffineTransform]
+           [java.util ArrayList]
            [org.opencv.imgproc Imgproc]
            [org.opencv.imgcodecs Imgcodecs]
            [org.opencv.core Core CvType Mat MatOfInt]))
@@ -77,6 +78,23 @@ From a cursory search, OpenCV likes files it would seem…"
   (let [temporary-file (template-as-file template-name)]
     (try
       (read-mat temporary-file)
+      (finally
+        (.delete temporary-file)))))
+
+(defn- convert-mat-to-hue
+  [src-mat]
+  (let [dst-mat (Mat. (.rows src-mat) (.cols src-mat) CvType/CV_8UC3)
+        channels (ArrayList. 3)]
+    (Imgproc/cvtColor src-mat dst-mat Imgproc/COLOR_BGR2HSV)
+    (Core/split dst-mat channels)
+    (first channels)))
+
+(defn read-hue-template
+  "Read a java resource into a mat containing just the hue channel"
+  [template-name]
+  (let [temporary-file (template-as-file template-name)]
+    (try
+      (convert-mat-to-hue (read-mat temporary-file))
       (finally
         (.delete temporary-file)))))
 
