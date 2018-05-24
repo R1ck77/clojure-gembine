@@ -32,14 +32,6 @@
   (filter (fn [[move _]] (game/can-move? board move))
           results))
 
-(defn minimax-moves-evaluator
-  "One depth minimax solver. Can still make it to 60k, with a bit of patience"
-  ([board next-element]
-   (minimax-moves-evaluator board next-element score/simple-score))
-  ([board next-element score-function]
-   (get-best-minimax-move
-    (keep-only-feasible board (minimax-score-moves board #{next-element} score-function)))))
-
 (defn- deep-minimax-terminal-step
   [board next-elements score-function]
   (map second (minimax-score-moves board next-elements score-function)))
@@ -69,38 +61,7 @@
                                    (step-2-minimax-computer-move move boards @allowed-next-elements score-function))
                                  (game/evolve-board board #{next-element}))))))))
 
-(declare ^:private step-n-minimax-computer-move)
-
-(defn- step-n-minimax-my-move
-  "Return the minimax of the n depth move. The move selected is irrelevant, just the points matter"
-  [board next-elements score-function depth]
-  (if (= board :game-over)
-    (score-function :game-over)
-    (let [depth (dec depth)]
-      (apply max (if (zero? depth)
-                   (deep-minimax-terminal-step board next-elements score-function)
-                   (map second (map #(step-n-minimax-computer-move % [board] next-elements score-function depth) moves)))))))
-
-(defn- step-n-minimax-computer-move
-  [move boards next-elements score-function depth]
-  (vector move (apply min (map #(step-n-minimax-my-move % next-elements score-function depth) boards))))
-
-
-(defn create-deep-minimax-solver
-  "Level n solver"
-  ([depth]
-   (create-deep-minimax-solver depth score/simple-score))
-  ([depth score-function]
-   (assert (> depth 1))
-   (let [allowed-next-elements (atom #{:rb :rB})]
-     (fn [board next-element]
-       (swap! allowed-next-elements #(conj % next-element))
-       (get-best-minimax-move
-        (keep-only-feasible board
-                            (pmap (fn [[move boards]]
-                                   (step-n-minimax-computer-move move boards @allowed-next-elements score-function (- depth 1)))
-                                 (game/evolve-board board #{next-element})
-                                 )))))))
+;;;(declare ^:private step-n-minimax-computer-move)
 
 (defn- vector-of-move-min
   [[move scores]]
@@ -163,3 +124,27 @@
       (map-of-movesscores (map-of-feasible-movesx board
                                                   (map-of-movesboards board next-element))
                           score-function))))))
+
+
+(defn two-steps-minimax-function [board next-element allowed-elements]
+  (get-best-minimax-move
+   (keep-only-feasible board
+                       (map (fn [[move boards]]
+                              (step-2-minimax-computer-move move boards allowed-elements score-function))
+                            (game/evolve-board board #{next-element})))))
+
+(defn invoke-minimax-function-with-updated-cpu-moves
+  "Call the minimax function m(board next-element allowed-cpu-moves) keeping track of the possible cpu moves"
+  [allowed-next-elements-atom minimax-function board next-element]
+  (swap! allowed-next-elements-atom #(conj % next-element))
+  (minimax-function board next-element @allowed-next-elements-atom))
+
+(defn create-minimax-level-2-solver
+  "Create a minimax that looks 2 steps ahead"
+  ([]
+   (create-minimax-level-2-solver score/simple-score))
+  ([score-function]
+   (partial invoke-minimax-function-with-updated-cpu-moves
+            (atom #{:rb :rB})
+            two-steps-minimax-function)))
+
