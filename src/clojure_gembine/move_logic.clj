@@ -78,7 +78,7 @@ The result can be nil if there is no possible move available"
 
 (def minimax-moves-evaluator one-step-minimax-function)
 
-(defn score-board-with-minimax
+(defn score-board-with-minimax ;;; TODO/FIXME extract functions. Parallelize
   [allowed-elements score-function board]
   (if (or (nil? board) (= :game-over board))
     (score-function :game-over)
