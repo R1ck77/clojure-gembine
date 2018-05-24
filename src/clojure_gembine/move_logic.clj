@@ -101,3 +101,65 @@
                                    (step-n-minimax-computer-move move boards @allowed-next-elements score-function (- depth 1)))
                                  (game/evolve-board board #{next-element})
                                  )))))))
+
+(defn- vector-of-move-min
+  [[move scores]]
+  (vector move (apply min scores)))
+
+(defn map-of-movesmin
+  [m-moves-scores]
+  (map vector-of-move-min m-moves-scores))
+
+(defn- vector-of-move-scores
+  [[move boards] score-function]
+  (vector move (map score-function boards)))
+
+(defn- f-vector-of-move-scores
+  [score-function]
+  #(vector-of-move-scores % score-function))
+
+(defn map-of-movesscores
+  [m-moves-boards score-function]
+  (into {}
+        (map (f-vector-of-move-scores score-function) m-moves-boards)))
+
+(defn map-of-movesboards
+  [board next-element]
+  (game/evolve-board board #{next-element}))
+
+(defn- f-is-legal-move?
+  [board]
+  (partial game/can-move? board))
+
+(defn set-of-feasible-moves
+  [board]
+  (set (filter (f-is-legal-move? board) moves)))
+
+(defn map-of-feasible-movesx
+  [board m-moves-x]
+  (let [feasible-moves (set-of-feasible-moves board)]
+    (into {}
+          (filter (fn [[move x]]
+                    (contains? feasible-moves move))
+                  m-moves-x))))
+
+(defn- negated-min-value
+  [[_ min-value]]
+  (- min-value))
+
+(defn vector-of-move-maxscore
+  [m-movesmin]
+  (first
+   (sort-by negated-min-value m-movesmin)))
+
+(defn minimax-moves-evaluator
+  "One depth minimax solver. Can still make it to 60k, with a bit of patience"
+  ([board next-element]
+   (minimax-moves-evaluator board next-element score/simple-score))
+  ([board next-element score-function]
+   (first
+    (vector-of-move-maxscore
+     (map-of-movesmin
+      (map-of-movesscores (map-of-feasible-movesx board
+                                                  (map-of-movesboards board next-element))
+                          score-function))))))
