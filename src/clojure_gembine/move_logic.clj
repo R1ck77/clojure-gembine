@@ -66,26 +66,44 @@ The result can be nil if there is no possible move available"
                                                   (map-of-movesboards board next-elements))
                           score-function))))
 
-(defn minimax-moves-evaluator
+(defn one-step-minimax-function
   "One depth minimax solver. Can still make it to 60k, with a bit of patience"
   ([board next-element]
-   (minimax-moves-evaluator board next-element score/simple-score))
+   (one-step-minimax-function board next-element score/simple-score))
   ([board next-element score-function]
-   (first (bestmove-maxscore board #{next-element} score-function))))
+   (first
+    (bestmove-maxscore board
+                       #{next-element}
+                       score-function))))
+
+(def minimax-moves-evaluator one-step-minimax-function)
 
 (defn score-board-with-minimax
   [allowed-elements score-function board]
-  (let [score-or-nil (second (bestmove-maxscore board allowed-elements score-function))]
-    (if score-or-nil
-      score-or-nil
-      (score-function :game-over))))
+  (if (or (nil? board) (= :game-over board))
+    (score-function :game-over)
+    (let [score-or-nil (second (bestmove-maxscore board allowed-elements score-function))]
+      (if score-or-nil
+        score-or-nil
+        (score-function :game-over)))))
 
 (defn two-steps-minimax-function
   [board next-element allowed-elements score-function]
   (first
    (bestmove-maxscore board
-                      next-element
+                      #{next-element}
                       (partial score-board-with-minimax allowed-elements score-function))))
+
+(defn three-steps-minimax-function
+  [board next-element allowed-elements score-function]
+  (first
+   (bestmove-maxscore board
+                      #{next-element}
+                      (partial score-board-with-minimax
+                               allowed-elements
+                               (partial score-board-with-minimax
+                                        allowed-elements
+                                        score-function)))))
 
 (defn invoke-minimax-function-with-updated-cpu-moves
   "Call the minimax function m(board next-element allowed-cpu-moves) keeping track of the possible cpu moves"
@@ -101,3 +119,12 @@ The result can be nil if there is no possible move available"
    (partial invoke-minimax-function-with-updated-cpu-moves
             (atom #{:rb :rB})
             #(two-steps-minimax-function % %2 %3 score-function))))
+
+(defn create-minimax-level-3-solver
+  "Create a minimax that looks 3 steps ahead"
+  ([]
+   (create-minimax-level-3-solver score/simple-score))
+  ([score-function]
+   (partial invoke-minimax-function-with-updated-cpu-moves
+            (atom #{:rb :rB})
+            #(three-steps-minimax-function % %2 %3 score-function))))
