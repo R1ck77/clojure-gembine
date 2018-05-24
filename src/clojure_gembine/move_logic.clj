@@ -56,6 +56,9 @@
    (sort-by negated-min-value m-movesmin)))
 
 (defn bestmove-maxscore
+  "Return a vector [move score] representing the best move for the arguments in a minimax step.
+
+The result can be nil if there is no possible move available"
   [board next-elements score-function]
   (vector-of-move-maxscore
      (map-of-movesmin
@@ -70,18 +73,19 @@
   ([board next-element score-function]
    (first (bestmove-maxscore board #{next-element} score-function))))
 
+(defn score-board-with-minimax
+  [allowed-elements score-function board]
+  (let [score-or-nil (second (bestmove-maxscore board allowed-elements score-function))]
+    (if score-or-nil
+      score-or-nil
+      (score-function :game-over))))
 
 (defn two-steps-minimax-function
   [board next-element allowed-elements score-function]
-  (first (vector-of-move-maxscore
-          (map-of-movesmin
-           (map-of-movesscores
-            (map-of-feasible-movesx board
-                                    (map-of-movesboards board #{next-element}))
-            (fn [board] (let [score-or-nil (second (bestmove-maxscore board allowed-elements score-function))]
-                          (if score-or-nil
-                            score-or-nil
-                            (score-function :game-over)))))))))
+  (first
+   (bestmove-maxscore board
+                      next-element
+                      (partial score-board-with-minimax allowed-elements score-function))))
 
 (defn invoke-minimax-function-with-updated-cpu-moves
   "Call the minimax function m(board next-element allowed-cpu-moves) keeping track of the possible cpu moves"
@@ -97,4 +101,3 @@
    (partial invoke-minimax-function-with-updated-cpu-moves
             (atom #{:rb :rB})
             #(two-steps-minimax-function % %2 %3 score-function))))
-
