@@ -61,7 +61,7 @@
 The result can be nil if there is no possible move available"
   [board next-elements score-function]
   (vector-of-move-maxscore
-     (map-of-movesmin
+     (map-of-movesmin ;;; TODO/FIXME possible pmap. Use meta
       (map-of-movesscores (map-of-feasible-movesx board
                                                   (map-of-movesboards board next-elements))
                           score-function))))
