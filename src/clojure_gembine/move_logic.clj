@@ -10,8 +10,8 @@
   (vector move (apply min scores)))
 
 (defn map-of-movesmin
-  [m-moves-scores]
-  (map vector-of-move-min m-moves-scores))
+  [m-moves-scores parallel]
+  ((if parallel pmap map) vector-of-move-min m-moves-scores))
 
 (defn- vector-of-move-scores
   [[move boards] score-function]
@@ -58,13 +58,16 @@
 (defn bestmove-maxscore
   "Return a vector [move score] representing the best move for the arguments in a minimax step.
 
-The result can be nil if there is no possible move available"
-  [board next-elements score-function]
-  (vector-of-move-maxscore
-     (map-of-movesmin
-      (map-of-movesscores (map-of-feasible-movesx board
-                                                  (map-of-movesboards board next-elements))
-                          score-function))))
+  The result can be nil if there is no possible move available"
+  ([board next-elements score-function]
+   (bestmove-maxscore board next-elements score-function false))
+  ([board next-elements score-function parallel]
+   (vector-of-move-maxscore
+    (map-of-movesmin
+     (map-of-movesscores (map-of-feasible-movesx board
+                                                 (map-of-movesboards board next-elements))
+                         score-function)
+     parallel))))
 
 (defn one-step-minimax-function
   "One depth minimax solver. Can still make it to 60k, with a bit of patience"
@@ -108,7 +111,8 @@ The result can be nil if there is no possible move available"
                       (partial recursive-score-board
                                allowed-elements
                                score-function
-                               depth))))
+                               depth)
+                      true)))
 
 
 (defn invoke-minimax-function-with-updated-cpu-moves
