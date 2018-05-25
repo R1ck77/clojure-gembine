@@ -104,6 +104,18 @@ The result can be nil if there is no possible move available"
                                (partial score-board-with-minimax
                                         allowed-elements
                                         score-function)))))
+(defn four-steps-minimax-function
+  [board next-element allowed-elements score-function]
+  (first
+   (bestmove-maxscore board
+                      #{next-element}
+                      (partial score-board-with-minimax
+                               allowed-elements
+                               (partial score-board-with-minimax
+                                        allowed-elements
+                                        (partial score-board-with-minimax
+                                         allowed-elements
+                                         score-function))))))
 
 (defn invoke-minimax-function-with-updated-cpu-moves
   "Call the minimax function m(board next-element allowed-cpu-moves) keeping track of the possible cpu moves"
@@ -128,3 +140,12 @@ The result can be nil if there is no possible move available"
    (partial invoke-minimax-function-with-updated-cpu-moves
             (atom #{:rb :rB})
             #(three-steps-minimax-function % %2 %3 score-function))))
+
+(defn create-minimax-level-4-solver
+  "Create a minimax that looks 3 steps ahead"
+  ([]
+   (create-minimax-level-4-solver score/simple-score))
+  ([score-function]
+   (partial invoke-minimax-function-with-updated-cpu-moves
+            (atom #{:rb :rB})
+            #(four-steps-minimax-function % %2 %3 score-function))))
