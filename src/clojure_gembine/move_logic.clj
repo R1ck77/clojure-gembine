@@ -87,36 +87,6 @@ The result can be nil if there is no possible move available"
         score-or-nil
         (score-function :game-over)))))
 
-(defn two-steps-minimax-function
-  [board next-element allowed-elements score-function]
-  (first
-   (bestmove-maxscore board
-                      #{next-element}
-                      (partial score-board-with-minimax allowed-elements score-function))))
-
-(defn three-steps-minimax-function
-  [board next-element allowed-elements score-function]
-  (first
-   (bestmove-maxscore board
-                      #{next-element}
-                      (partial score-board-with-minimax
-                               allowed-elements
-                               (partial score-board-with-minimax
-                                        allowed-elements
-                                        score-function)))))
-(defn four-steps-minimax-function
-  [board next-element allowed-elements score-function]
-  (first
-   (bestmove-maxscore board
-                      #{next-element}
-                      (partial score-board-with-minimax
-                               allowed-elements
-                               (partial score-board-with-minimax
-                                        allowed-elements
-                                        (partial score-board-with-minimax
-                                         allowed-elements
-                                         score-function))))))
-
 (defn recursive-score-board
   [allowed-elements score-function depth board]
   (if (= depth 1)
@@ -146,33 +116,6 @@ The result can be nil if there is no possible move available"
   [allowed-next-elements-atom minimax-function board next-element]
   (swap! allowed-next-elements-atom #(conj % next-element))
   (minimax-function board next-element @allowed-next-elements-atom))
-
-(defn create-minimax-level-2-solver
-  "Create a minimax that looks 2 steps ahead"
-  ([]
-   (create-minimax-level-2-solver score/simple-score))
-  ([score-function]
-   (partial invoke-minimax-function-with-updated-cpu-moves
-            (atom #{:rb :rB})
-            #(two-steps-minimax-function % %2 %3 score-function))))
-
-(defn create-minimax-level-3-solver
-  "Create a minimax that looks 3 steps ahead"
-  ([]
-   (create-minimax-level-3-solver score/simple-score))
-  ([score-function]
-   (partial invoke-minimax-function-with-updated-cpu-moves
-            (atom #{:rb :rB})
-            #(three-steps-minimax-function % %2 %3 score-function))))
-
-(defn create-minimax-level-4-solver
-  "Create a minimax that looks 3 steps ahead"
-  ([]
-   (create-minimax-level-4-solver score/simple-score))
-  ([score-function]
-   (partial invoke-minimax-function-with-updated-cpu-moves
-            (atom #{:rb :rB})
-            #(four-steps-minimax-function % %2 %3 score-function))))
 
 (defn create-minimax-level-n-solver
   "Create a minimax that looks 3 steps ahead"
