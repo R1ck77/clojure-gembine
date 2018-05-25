@@ -61,7 +61,7 @@
 The result can be nil if there is no possible move available"
   [board next-elements score-function]
   (vector-of-move-maxscore
-     (map-of-movesmin ;;; TODO/FIXME possible pmap. Use meta
+     (map-of-movesmin
       (map-of-movesscores (map-of-feasible-movesx board
                                                   (map-of-movesboards board next-elements))
                           score-function))))
@@ -117,6 +117,30 @@ The result can be nil if there is no possible move available"
                                          allowed-elements
                                          score-function))))))
 
+(defn recursive-score-board
+  [allowed-elements score-function depth board]
+  (if (= depth 1)
+    (score-function board)
+    (score-board-with-minimax
+             allowed-elements
+             (partial recursive-score-board
+                      allowed-elements
+                      score-function
+                      (dec depth))
+             board)))
+
+(defn n-steps-minimax-function
+  [board next-element allowed-elements score-function depth]
+  (assert (> depth 0))
+  (first
+   (bestmove-maxscore board
+                      #{next-element}
+                      (partial recursive-score-board
+                               allowed-elements
+                               score-function
+                               depth))))
+
+
 (defn invoke-minimax-function-with-updated-cpu-moves
   "Call the minimax function m(board next-element allowed-cpu-moves) keeping track of the possible cpu moves"
   [allowed-next-elements-atom minimax-function board next-element]
@@ -149,3 +173,13 @@ The result can be nil if there is no possible move available"
    (partial invoke-minimax-function-with-updated-cpu-moves
             (atom #{:rb :rB})
             #(four-steps-minimax-function % %2 %3 score-function))))
+
+(defn create-minimax-level-n-solver
+  "Create a minimax that looks 3 steps ahead"
+  ([depth]
+   (create-minimax-level-n-solver score/simple-score depth))
+  ([score-function depth]
+   (partial invoke-minimax-function-with-updated-cpu-moves
+            (atom #{:rb :rB})
+            #(n-steps-minimax-function % %2 %3 score-function depth))))
+
