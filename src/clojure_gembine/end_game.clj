@@ -3,11 +3,18 @@
             [clojure-gembine.parameters :refer :all]
             [clojure-gembine.keyboard :refer :all]))
 
-(defn secret-level? [screenshot]
-  (let [secret-area-region (get-screen-section screenshot secret-level-area)]
-    (> (nth (match-template secret-area-region entering-secret-area) 2) 0.8)))
+(def secret-level-threshold 0.8)
 
-(defn end-game-ritual [robot]
+(defn secret-level?
+  [screenshot]
+  (let [secret-area-region (get-screen-section screenshot secret-level-area)]
+    (> (nth (match-template secret-area-region entering-secret-area) 2) secret-level-threshold)))
+
+(defn end-game-ritual
+  "Guide JYDGE from the 'Entering Secret Level' screen to a non tutorial Gembine game
+
+Delays arbitrary, and hopefully on the large side"
+  [robot]
   (sleep 3000)
 
   ;;; enter secret level

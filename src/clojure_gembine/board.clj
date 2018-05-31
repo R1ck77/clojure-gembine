@@ -2,9 +2,11 @@
   (:require [clojure-gembine.parameters :refer :all]
             [clojure-gembine.utils :as utils]))
 
-(def red-condition #(> (nth % 2) 80))
-(def blue-condition #(> (first %) 80))
-(def green-condition #(> (second %) 80))
+(def min-color-component-for-match 80)
+
+(def red-condition #(> (nth % 2) min-color-component-for-match))
+(def blue-condition #(> (first %) min-color-component-for-match))
+(def green-condition #(> (second %) min-color-component-for-match))
 
 (def color-to-symbol-to-image {
                       :red {

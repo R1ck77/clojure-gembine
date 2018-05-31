@@ -24,8 +24,11 @@
    (map (fn [index] (vec (map #(nth % index) (reverse board))))
         [0 1 2 3])))
 
-;;; TODO/FIXME these rule are overkill. They can probably be simplified…
-(defn- tuple-conversion [a b]
+(defn- tuple-conversion
+  "Reduce a tuple using Gembine's logic.
+
+Some rules are probably overkill"
+  [a b]
   (cond   
     ;;; same symbol on both → transmutation
     (and (= a b) (not (nil? a))) [(get next-cell a) nil]
@@ -38,7 +41,8 @@
     ;;; fail early in case of unexpected results
     true (throw (RuntimeException. (format "Unexpected result [%s %s]" a b)))))
 
-(defn- reduce-tuple [{result :result seed :seed} value]
+(defn- reduce-tuple
+  [{result :result seed :seed} value]
   (let [[next-a next-b] (tuple-conversion seed value)]
     {:result (conj result next-a)
      :seed next-b}))
@@ -58,15 +62,9 @@
    (step-row (nth board 2))
    (step-row (nth board 3))])
 
-(defn- Tf [board direction f] 
-  (case direction
-    :down (-> board rotate f)
-    :up (-> board rotate rotate rotate f)
-    :left (f board)
-    :right (-> board rotate rotate f)))
-
-
-(defn- TfinvT [board direction f] 
+(defn- TfinvT
+  "Rotate the board so that the function f is applied with direction to the left, then apply the inverse rotation"
+  [board direction f]
   (case direction
     :down (-> board rotate f rotate rotate rotate)
     :up (-> board rotate rotate rotate f rotate)
@@ -83,7 +81,7 @@
 
 Easiest (and dumbest) way is to try to perform the move and see if anything changed.
 
-Good enough performance wise, at least for now."
+Slow performances"
   [board direction]
   (not (= board (move board direction))))
 

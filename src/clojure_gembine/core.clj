@@ -11,6 +11,8 @@
             [clojure-gembine.keyboard :as keyboard])
   (:gen-class))
 
+(def gembine-title-threshold 0.95)
+
 (def move-delay-ms 1000)
 
 (def license-blurb "clojure-gembine - Copyright (C) 2018  Riccardo Di Meo
@@ -27,7 +29,7 @@ and you are welcome to redistribute it under the terms of the GPL v3\n")
 (defn is-gembine? 
   [screenshot]
   (let [title-region (get-screen-section screenshot title-area)]
-    (> (nth (utils/match-template title-region gembine-title) 2) 0.95)))
+    (> (nth (utils/match-template title-region gembine-title) 2) gembine-title-threshold)))
 
 (defn- perform-move [robot direction]
   (move robot direction)
