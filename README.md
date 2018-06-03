@@ -37,7 +37,7 @@ The crude minimax algorithm used as a solver is not a sure-hit winner, it will t
 
 ### Bugs
 
-Many. This is just an exercise, and a pretext for a blog post: it doesn't presume to be stable code.
+Many. This is just an exercise, and a pretext for a blog post (which you can find [here by the way](http://www.riccardodimeo.com/wp/2018/06/03/the-only-winning-move-is-not-to-play/ "the one language all programmers know")): it doesn't presume to be stable code.
 
 ``clojure-gembine`` has been developed with a single Full HD monitor setup in mind. I have added a semi-decent rescaling feature that should make the game work (to an extent…) on *some* other monitor ratios, but that part of the code has not been tested extensively, so use other ratios at your own risk, but it will still fail miserably on a multi-monitor rig.
 
